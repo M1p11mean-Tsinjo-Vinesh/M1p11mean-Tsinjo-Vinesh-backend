@@ -71,7 +71,7 @@ export class CrudService {
       elements,
       count,
       page,
-      offset
+      pageSize: offset
     };
   }
 
