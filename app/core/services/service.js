@@ -58,7 +58,7 @@ export class CrudService {
    * @param {Object} sort - The sorting options.
    * @returns {Promise} A promise that resolves to the paginated result.
    */
-  async findAllPaginated(page, offset, sort = {}) {
+  async findAllPaginated(page = 1, offset = 10, sort = {}) {
     if (page < 0) page = 1;
     const query = this.Model.find({})
       .limit(offset)

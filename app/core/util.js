@@ -36,7 +36,7 @@ export const success = (res, body = {}, fn = res.json) => respond(res, 200, body
  */
 export const CustomError = (code, message) => {
   const error = new Error(message);
-  error.code = code;
+  error.statusCode = code;
   return error;
 }
 

@@ -66,12 +66,14 @@ export class CrudController {
    */
   async findAllPaginated(req, res, next) {
     try {
-      const { page, offset, sort } = req.query;
+      let { page, offset, sort } = req.query;
 
       // Check if page and offset query parameters are provided
       if (!page || !offset) {
-        next(BadRequest("page and offset query parameters are required"));
-        return;
+        page = 1;
+        offset = 10;
+        // next(BadRequest("page and offset query parameters are required"));
+        // return;
       }
 
       // Retrieve and respond with paginated entities
