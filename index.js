@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import userRoute from "#routes/user-route.js";
 import * as db from "./db.js";
 import {errorHandler} from "./app/middlewares/error-handler.js";
+import {queryObjectParser} from "./app/middlewares/query-object-parser.js";
 
 // dot env support
 dotenv.config();
@@ -22,6 +23,7 @@ db.connect();
 // register middleware body Parser
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.use(queryObjectParser);
 
 // register routes
 app.use("/users", userRoute);
