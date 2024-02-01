@@ -45,7 +45,6 @@ export class CrudService {
       const sortData = {
         [column]: parseInt(method)
       };
-      console.log("SORT", sortData);
       query = query.sort(sortData);
     }
     return query;
