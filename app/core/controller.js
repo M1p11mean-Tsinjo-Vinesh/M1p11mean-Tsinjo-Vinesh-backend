@@ -48,7 +48,8 @@ export class CrudController {
    */
   async findAll(req, res, next) {
     try {
-      const all = await this.service.findAll();
+      const {sort} = req.query;
+      const all = await this.service.findAll(sort);
       success(res, all);
     }
     catch (e) {
@@ -65,7 +66,7 @@ export class CrudController {
    */
   async findAllPaginated(req, res, next) {
     try {
-      const { page, offset } = req.query;
+      const { page, offset, sort } = req.query;
 
       // Check if page and offset query parameters are provided
       if (!page || !offset) {
@@ -74,7 +75,7 @@ export class CrudController {
       }
 
       // Retrieve and respond with paginated entities
-      const result = await this.service.findAllPaginated(parseInt(page), parseInt(offset));
+      const result = await this.service.findAllPaginated(parseInt(page), parseInt(offset), sort);
       success(res, result);
     }
     catch (e) {
