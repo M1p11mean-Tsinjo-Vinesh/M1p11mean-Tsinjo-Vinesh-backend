@@ -1,0 +1,31 @@
+{
+  "name": "m1p11mean-tsinjo-vinesh-backend",
+  "version": "1.0.0",
+  "description": "Rest API backend for M1 p11 Mean",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "type": "module",
+  "author": "TsinjoAndrianarivony & SinelVinesh",
+  "license": "MIT",
+  "imports": {
+    "#models/*.js": "./app/models/*.js",
+    "#core/*.js": "./app/core/*.js",
+    "#core/services/*.js": "./app/core/services/*.js",
+    "#controllers/*.js": "./app/controllers/*.js",
+    "#routes/*.js": "./app/routes/*.js",
+    "#services/*.js": "./app/services/*.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.1.0",
+    "nodemailer": "^6.9.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
