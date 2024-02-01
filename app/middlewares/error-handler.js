@@ -10,6 +10,8 @@ export const errorHandler = (err, req, res, next) => {
     message: message
   };
 
+  console.error(err);
+
   // Respond with formatted error JSON
   res.status(errorBody.statusCode).json({ error: errorBody });
 }

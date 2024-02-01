@@ -4,6 +4,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import userRoute from "#routes/user-route.js";
 import * as db from "./db.js";
+import cors from "cors";
 import {errorHandler} from "./app/middlewares/error-handler.js";
 import {queryObjectParser} from "./app/middlewares/query-object-parser.js";
 
@@ -24,6 +25,10 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(queryObjectParser);
+
+app.use(cors({
+  origin: "http://localhost:4200"
+}))
 
 // register routes
 app.use("/users", userRoute);
