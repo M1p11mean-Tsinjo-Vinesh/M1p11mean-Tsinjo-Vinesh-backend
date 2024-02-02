@@ -12,7 +12,7 @@
   "author": "TsinjoAndrianarivony & SinelVinesh",
   "license": "MIT",
   "imports": {
-    "#models/*": "./app/models/*",
+    "#models/*": "./app/data/models/*",
     "#core/*": "./app/core/*",
     "#controllers/*": "./app/controllers/*",
     "#routes/*": "./app/routes/*",

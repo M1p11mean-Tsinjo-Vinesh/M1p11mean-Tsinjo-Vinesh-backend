@@ -3,13 +3,16 @@ import { BadRequest } from "#core/util.js";
 import jwt from "jsonwebtoken";
 import { validateEmail, validatePhone } from "../../common/validators.js";
 import Errors from "../../common/Errors.js";
-import { ClientModel } from "#models/client.modal.js";
+import { ClientModel } from "#models/client.model.js";
+import UserType from "../../data/constant/UserType.js";
 
 export class AuthService {
   Modal;
 
   roleMapping = {
-    [ClientModel]: "client",
+    [ClientModel]: UserType.CLIENT,
+    EMPLOYEE: UserType.EMPLOYEE,
+    MANAGER: UserType.MANAGER,
   };
 
   constructor(Model) {
@@ -36,7 +39,9 @@ export class AuthService {
           lastName: user.lastName,
           email: user.email,
           phone: user.phone,
-          role: this.roleMapping[this.Modal],
+          role: user.employeeType
+            ? this.roleMapping[user.employeeType]
+            : this.roleMapping[this.Modal],
         },
         process.env.TOKEN_SECRET,
         {
@@ -59,6 +64,7 @@ export class AuthService {
       .update(data.password)
       .digest("hex");
     const user = new this.Modal({ ...data, password: hashedPassword });
+    await user.save();
     return {
       jwt: jwt.sign(
         {
