@@ -3,9 +3,14 @@ import { BadRequest } from "#core/util.js";
 import jwt from "jsonwebtoken";
 import { validateEmail, validatePhone } from "../../common/validators.js";
 import Errors from "../../common/Errors.js";
+import { ClientModel } from "#models/client.modal.js";
 
 export class AuthService {
   Modal;
+
+  roleMapping = {
+    [ClientModel]: "client",
+  };
 
   constructor(Model) {
     this.Modal = Model;
@@ -31,6 +36,7 @@ export class AuthService {
           lastName: user.lastName,
           email: user.email,
           phone: user.phone,
+          role: this.roleMapping[this.Modal],
         },
         process.env.TOKEN_SECRET,
         {
