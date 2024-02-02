@@ -7,13 +7,11 @@
  * @param {Function} fn - The response function (default is res.json).
  */
 export const respond = (res, statusCode, body = {}, fn = res.json) => {
-  res.status(statusCode);
-
   // If body is empty, send an empty response
-  if (Object.keys(body).length === 0) res.send();
+  if (statusCode === 204) res.status(statusCode);
 
   // Call the response function with formatted body
-  fn.call(res, {
+  fn.call(res.status(statusCode), {
     data: body
   });
 }

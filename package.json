@@ -11,12 +11,11 @@
   "author": "TsinjoAndrianarivony & SinelVinesh",
   "license": "MIT",
   "imports": {
-    "#models/*.js": "./app/models/*.js",
-    "#core/*.js": "./app/core/*.js",
-    "#core/services/*.js": "./app/core/services/*.js",
-    "#controllers/*.js": "./app/controllers/*.js",
-    "#routes/*.js": "./app/routes/*.js",
-    "#services/*.js": "./app/services/*.js"
+    "#models/*": "./app/models/*",
+    "#core/*": "./app/core/*",
+    "#controllers/*": "./app/controllers/*",
+    "#routes/*": "./app/routes/*",
+    "#services/*": "./app/services/*"
   },
   "dependencies": {
     "body-parser": "^1.20.2",

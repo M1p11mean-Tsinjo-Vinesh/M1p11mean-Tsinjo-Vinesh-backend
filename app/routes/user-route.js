@@ -1,5 +1,5 @@
-import {CrudController} from "#core/controller.js";
-import {CrudService} from "#core/services/service.js";
+import {CrudController} from "#core/controllers/crud-controller.js";
+import {CrudService} from "#core/services/crud-service.js";
 import {UserModel} from "#models/user-model.js";
 
 
