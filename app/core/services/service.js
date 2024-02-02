@@ -1,23 +1,11 @@
 import { BadRequest } from "#core/util.js";
 
-export class CrudService {
-
+export class ReadService {
   // The MongoDB model for the CRUD operations
   Model;
 
   constructor(model) {
     this.Model = model;
-  }
-
-  /**
-   * Creates a new entity.
-   *
-   * @param {Object} data - The data for the new entity.
-   * @returns {Promise} A promise that resolves to the created entity.
-   */
-  async create(data) {
-    const entity = new this.Model(data);
-    return await entity.save();
   }
 
   /**
@@ -30,6 +18,7 @@ export class CrudService {
     let query = this.Model.find({});
     return await this.sortQuery(query, sort);
   }
+
 
   /**
    * Sorts the given query based on the provided sorting options.
@@ -83,6 +72,26 @@ export class CrudService {
    */
   async findById(id) {
     return await this.Model.findById(id);
+  }
+
+
+}
+
+export class CrudService extends ReadService {
+
+  constructor(Model) {
+    super(Model);
+  }
+
+  /**
+   * Creates a new entity.
+   *
+   * @param {Object} data - The data for the new entity.
+   * @returns {Promise} A promise that resolves to the created entity.
+   */
+  async create(data) {
+    const entity = new this.Model(data);
+    return await entity.save();
   }
 
   /**
