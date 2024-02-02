@@ -6,7 +6,7 @@ mongoose.Promise = global.Promise;
 /**
  * Callback function for database connection error.
  *
- * @param {Error} err - The error object from the database connection.
+ * @param {Errors} err - The error object from the database connection.
  */
 function onDbConnectError(err) {
   console.log('Could not connect to the database', err);

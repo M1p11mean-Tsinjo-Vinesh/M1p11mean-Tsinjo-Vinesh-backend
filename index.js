@@ -2,7 +2,8 @@
 import dotenv from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
-import userRoute from "#routes/user-route.js";
+import userRoute from "#routes/user.route.js";
+import clientRoute from "#routes/client.route.js";
 import * as db from "./db.js";
 import cors from "cors";
 import {errorHandler} from "./app/middlewares/error-handler.js";
@@ -22,7 +23,7 @@ db.connect();
 
 // middlewares
 // register middleware body Parser
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(queryObjectParser);
 
@@ -32,6 +33,7 @@ app.use(cors({
 
 // register routes
 app.use("/users", userRoute);
+app.use("/client", clientRoute);
 
 // handle throws or next(err) by async calls
 app.use(errorHandler)
