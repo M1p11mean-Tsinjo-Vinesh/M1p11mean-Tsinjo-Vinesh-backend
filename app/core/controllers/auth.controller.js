@@ -1,5 +1,5 @@
-import { success } from "#core/util.js";
-import { RouteBuilder as RouterBuilder } from "#core/routeBuilder.js";
+import {success} from "#core/util.js";
+import {RouteBuilder as RouterBuilder} from "#core/routeBuilder.js";
 
 export class AuthController {
   // The service responsible for Authentication operations

@@ -1,3 +1,9 @@
+import {createHash} from "crypto";
+
+export const hash = (text) => {
+  return createHash("sha256").update(text).digest("hex");
+}
+
 /**
  * Utility function to handle response formatting.
  *

@@ -27,6 +27,7 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(queryObjectParser);
+
 // Use of the authentication middleware
 app.use("/users", authenticateToken([UserType.CLIENT, UserType.EMPLOYEE]));
 

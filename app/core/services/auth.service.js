@@ -1,9 +1,8 @@
-import { createHash } from "crypto";
-import { BadRequest } from "#core/util.js";
+import {BadRequest, hash} from "#core/util.js";
 import jwt from "jsonwebtoken";
-import { validateEmail, validatePhone } from "../../common/validators.js";
+import {validateEmail, validatePhone} from "../../common/validators.js";
 import Errors from "../../common/Errors.js";
-import { ClientModel } from "#models/client.model.js";
+import {ClientModel} from "#models/client.model.js";
 import UserType from "../../data/constant/UserType.js";
 
 export class AuthService {
@@ -27,7 +26,7 @@ export class AuthService {
    * @returns {Promise} A promise that resolves to the user and token.
    */
   async login(email, password) {
-    const hashedPassword = createHash("sha256").update(password).digest("hex");
+    const hashedPassword = hash(password);
     const user = await this.Modal.findOne({ email, password: hashedPassword });
     if (!user) {
       throw BadRequest(Errors.LOGIN_INVALID_CREDENTIALS.message);
@@ -60,9 +59,7 @@ export class AuthService {
   async register(data) {
     validateEmail(data.email);
     validatePhone(data.phone);
-    const hashedPassword = createHash("sha256")
-      .update(data.password)
-      .digest("hex");
+    const hashedPassword = hash(data.password);
     const user = new this.Modal({ ...data, password: hashedPassword });
     await user.save();
     return {
