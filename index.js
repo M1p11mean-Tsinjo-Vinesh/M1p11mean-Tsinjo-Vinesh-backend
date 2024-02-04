@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
 import userRoute from "#routes/user.route.js";
-import clientRoute from "#routes/client.route.js";
 import * as db from "./db.js";
 import cors from "cors";
 import {errorHandler} from "./app/middlewares/error-handler.js";
@@ -11,6 +10,7 @@ import {queryObjectParser} from "./app/middlewares/query-object-parser.js";
 import {authenticateToken} from "./app/middlewares/auth.middleware.js";
 import employeeRoute from "#routes/employee.route.js";
 import UserType from "./app/data/constant/UserType.js";
+import clientRoute from "#routes/client.route.js";
 
 // dot env support
 dotenv.config();

@@ -35,6 +35,7 @@ export class AuthService {
     return {
       jwt: jwt.sign(
         {
+          _id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
@@ -68,10 +69,14 @@ export class AuthService {
     return {
       jwt: jwt.sign(
         {
+          _id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
           phone: user.phone,
+          role: user.employeeType
+            ? this.roleMapping[user.employeeType]
+            : this.roleMapping[this.Modal],
         },
         process.env.TOKEN_SECRET,
         {
