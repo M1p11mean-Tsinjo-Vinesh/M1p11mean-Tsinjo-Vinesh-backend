@@ -1,9 +1,8 @@
-import { createHash } from "crypto";
-import { BadRequest } from "#core/util.js";
+import {BadRequest, hash} from "#core/util.js";
 import jwt from "jsonwebtoken";
-import { validateEmail, validatePhone } from "../../common/validators.js";
+import {validateEmail, validatePhone} from "../../common/validators.js";
 import Errors from "../../common/Errors.js";
-import { ClientModel } from "#models/client.model.js";
+import {ClientModel} from "#models/client.model.js";
 import UserType from "../../data/constant/UserType.js";
 
 export class AuthService {
@@ -27,7 +26,7 @@ export class AuthService {
    * @returns {Promise} A promise that resolves to the user and token.
    */
   async login(email, password) {
-    const hashedPassword = createHash("sha256").update(password).digest("hex");
+    const hashedPassword = hash(password);
     const user = await this.Modal.findOne({ email, password: hashedPassword });
     if (!user) {
       throw BadRequest(Errors.LOGIN_INVALID_CREDENTIALS.message);
@@ -61,9 +60,7 @@ export class AuthService {
   async register(data) {
     validateEmail(data.email);
     validatePhone(data.phone);
-    const hashedPassword = createHash("sha256")
-      .update(data.password)
-      .digest("hex");
+    const hashedPassword = hash(data.password);
     const user = new this.Modal({ ...data, password: hashedPassword });
     await user.save();
     return {
@@ -84,5 +81,45 @@ export class AuthService {
         },
       ),
     };
+  }
+
+  /**
+   * Update method to update a user's information.
+   *
+   * @param {string} id - The unique identifier of the user.
+   * @param {Object} data - The data to be updated, including confirmPassword for password confirmation.
+   * @returns {Promise<Object>} - A promise that resolves to the updated data without the password field.
+   * @throws {BadRequest} - If password and confirmPassword do not match, or if the currentPassword is incorrect.
+   */
+  async update(id, data) {
+    // Destructure the data object, separating confirmPassword from the rest
+    const { confirmPassword, ...rest } = data;
+
+    // Check if the provided password and confirmPassword match
+    if (rest.password?.localeCompare(confirmPassword) !== 0) {
+      throw BadRequest("Les mots de passe ne correspondent pas.");
+    }
+
+    // Retrieve the existing data from the database based on the provided ID
+    const old = await this.Modal.findById(id);
+    if (!old) {
+      throw BadRequest("Entity not found");
+    }
+
+    // Check if the hashed currentPassword matches the existing hashed password
+    if (old.password.localeCompare(hash(data.currentPassword)) !== 0) {
+      throw BadRequest("Mot de passe actuel erroné!");
+    }
+
+    // Hash the confirmPassword and update the rest of the data
+    rest.password = hash(confirmPassword);
+
+    // Call the update method from the parent class (CrudService)
+    const updatedUser = await this.Modal.findByIdAndUpdate(id, rest, { new: true });
+
+
+    const { password, ...updateData } = updatedUser._doc;
+    // Return the updated data without the password field
+    return updateData;
   }
 }

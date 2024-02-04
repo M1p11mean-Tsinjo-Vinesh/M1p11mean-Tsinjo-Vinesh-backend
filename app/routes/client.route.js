@@ -3,6 +3,7 @@ import { AuthService } from "#core/services/auth.service.js";
 import { ClientModel } from "#models/client.model.js";
 import { ClientController } from "#core/controllers/client.controller.js";
 
+// Create an instance of AuthController for client authentication
 const clientAuthRoutes = new AuthController(new AuthService(ClientModel)).route;
 const clientRoutes = new ClientController().route;
 
