@@ -4,8 +4,13 @@ import {ReadService} from "#core/services/read-service.js";
 
 export class CrudService extends ReadService {
 
-  constructor(Model) {
-    super(Model);
+  constructor(Model, ignoredFields) {
+    super(Model, ignoredFields);
+  }
+
+  clean(data) {
+    this.ignoredFields.forEach(key => delete data[key]);
+    return data;
   }
 
   /**
@@ -16,7 +21,8 @@ export class CrudService extends ReadService {
    */
   async create(data) {
     const entity = new this.Model(data);
-    return await entity.save();
+    const created = await entity.save();
+    this.clean(created);
   }
 
   /**
@@ -31,7 +37,7 @@ export class CrudService extends ReadService {
     if (!updatedUser) {
       throw BadRequest("Entity not found");
     }
-    return updatedUser;
+    return this.clean(updatedUser);
   }
 
   /**

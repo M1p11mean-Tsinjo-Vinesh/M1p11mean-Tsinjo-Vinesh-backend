@@ -2,9 +2,18 @@
 export class ReadService {
   // The MongoDB model for the CRUD operations
   Model;
+  ignoredFields = [];
+  projection;
 
-  constructor(model) {
+  constructor(model, ignoredFields = []) {
     this.Model = model;
+    this.ignoredFields = ignoredFields;
+    this.buildProjection();
+  }
+
+  buildProjection() {
+    this.projection = {}
+    this.ignoredFields.forEach( key => this.projection[key] = 0);
   }
 
   /**
@@ -14,7 +23,7 @@ export class ReadService {
    * @returns {Promise} A promise that resolves to the array of entities.
    */
   async findAll(sort = {}) {
-    let query = this.Model.find({});
+    let query = this.Model.find({}, this.projection);
     return await this.sortQuery(query, sort);
   }
 
@@ -48,7 +57,7 @@ export class ReadService {
    */
   async findAllPaginated(page = 1, offset = 10, sort = {}) {
     if (page < 0) page = 1;
-    const query = this.Model.find({})
+    const query = this.Model.find({}, this.projection)
       .limit(offset)
       .skip((page - 1) * offset)
       .sort({ createdAt: -1 });
@@ -70,7 +79,7 @@ export class ReadService {
    * @returns {Promise} A promise that resolves to the retrieved entity.
    */
   async findById(id) {
-    return await this.Model.findById(id);
+    return await this.Model.findById(id, this.projection);
   }
 
 
