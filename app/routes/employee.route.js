@@ -4,6 +4,7 @@ import {EmployeeModel} from "#models/employee.model.js";
 import {CrudController} from "#core/controllers/crud-controller.js";
 import {EmployeeService} from "#services/employee.service.js";
 
-export const employeeAuthRouter = new AuthController(new AuthService(EmployeeModel)).route;
+const employeeAuthRouter = new AuthController(new AuthService(EmployeeModel)).route;
+const crudEmployee = new CrudController(new EmployeeService(EmployeeModel, ["password"])).route;
 
-export const crudEmployee = new CrudController(new EmployeeService(EmployeeModel, ["password"])).route;
+export {crudEmployee, employeeAuthRouter};

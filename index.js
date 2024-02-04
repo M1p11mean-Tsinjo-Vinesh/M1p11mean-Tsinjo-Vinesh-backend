@@ -31,6 +31,7 @@ app.use(queryObjectParser);
 // Use of the authentication middleware
 app.use("/users", authenticateToken([UserType.CLIENT, UserType.EMPLOYEE]));
 app.use("/client-info", authenticateToken([UserType.CLIENT]));
+app.use("/employees", authenticateToken([UserType.MANAGER]));
 
 app.use(
   cors({
@@ -41,7 +42,7 @@ app.use(
 // register routes
 app.use("/users", userRoute);
 app.use("/clients", clientAuthController);
-app.use("/employees", employeeAuthRouter);
+app.use("/employees-auth", employeeAuthRouter);
 app.use("/client-info", clientRouter);
 app.use("/employees", crudEmployee);
 
