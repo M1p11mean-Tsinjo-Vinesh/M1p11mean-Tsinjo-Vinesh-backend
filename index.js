@@ -11,6 +11,8 @@ import {authenticateToken} from "./app/middlewares/auth.middleware.js";
 import {crudEmployee, employeeAuthRouter} from "#routes/employee.route.js";
 import UserType from "./app/data/constant/UserType.js";
 import clientRoute from "#routes/client.route.js";
+import * as storage from "./storage.js";
+import {uploaderRouter} from "#routes/upload.router.js";
 
 // dot env support
 dotenv.config();
@@ -21,6 +23,9 @@ const PORT = process.env.PORT || 3000;
 
 // load database
 db.connect();
+
+// setup storage
+storage.setup();
 
 // middlewares
 // register middleware body Parser
@@ -45,6 +50,7 @@ app.use("/users", userRoute);
 app.use("/clients", clientRoute);
 app.use("/employees-auth", employeeAuthRouter);
 app.use("/employees", crudEmployee);
+app.use("/upload", uploaderRouter);
 
 // handle throws or next(err) by async calls
 app.use(errorHandler);
