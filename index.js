@@ -8,7 +8,7 @@ import cors from "cors";
 import {errorHandler} from "./app/middlewares/error-handler.js";
 import {queryObjectParser} from "./app/middlewares/query-object-parser.js";
 import {authenticateToken} from "./app/middlewares/auth.middleware.js";
-import employeeRoute from "#routes/employee.route.js";
+import {employeeAuthRouter} from "#routes/employee.route.js";
 import UserType from "./app/data/constant/UserType.js";
 import {clientAuthController, clientRouter} from "#routes/client.route.js";
 
@@ -41,7 +41,7 @@ app.use(
 // register routes
 app.use("/users", userRoute);
 app.use("/clients", clientAuthController);
-app.use("/employees", employeeRoute);
+app.use("/employees", employeeAuthRouter);
 app.use("/client-info", clientRouter);
 
 // handle throws or next(err) by async calls
