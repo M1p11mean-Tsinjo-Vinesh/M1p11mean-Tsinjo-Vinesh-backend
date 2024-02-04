@@ -22,7 +22,7 @@ export class CrudService extends ReadService {
   async create(data) {
     const entity = new this.Model(data);
     const created = await entity.save();
-    this.clean(created);
+    return this.clean(created._doc);
   }
 
   /**
@@ -37,7 +37,7 @@ export class CrudService extends ReadService {
     if (!updatedUser) {
       throw BadRequest("Entity not found");
     }
-    return this.clean(updatedUser);
+    return this.clean(updatedUser._doc);
   }
 
   /**
