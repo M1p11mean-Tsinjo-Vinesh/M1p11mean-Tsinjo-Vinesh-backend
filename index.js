@@ -10,7 +10,7 @@ import {queryObjectParser} from "./app/middlewares/query-object-parser.js";
 import {authenticateToken} from "./app/middlewares/auth.middleware.js";
 import {crudEmployee, employeeAuthRouter} from "#routes/employee.route.js";
 import UserType from "./app/data/constant/UserType.js";
-import {clientAuthController, clientRouter} from "#routes/client.route.js";
+import {clientAuthController} from "#routes/client.route.js";
 
 // dot env support
 dotenv.config();
@@ -30,7 +30,8 @@ app.use(queryObjectParser);
 
 // Use of the authentication middleware
 app.use("/users", authenticateToken([UserType.CLIENT, UserType.EMPLOYEE]));
-app.use("/client-info", authenticateToken([UserType.CLIENT]));
+app.use("/clients/update-info", authenticateToken([UserType.CLIENT]));
+app.use("/employees-auth/update-info", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
 app.use("/employees", authenticateToken([UserType.MANAGER]));
 
 app.use(
@@ -43,7 +44,6 @@ app.use(
 app.use("/users", userRoute);
 app.use("/clients", clientAuthController);
 app.use("/employees-auth", employeeAuthRouter);
-app.use("/client-info", clientRouter);
 app.use("/employees", crudEmployee);
 
 // handle throws or next(err) by async calls

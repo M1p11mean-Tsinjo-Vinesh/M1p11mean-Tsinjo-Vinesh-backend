@@ -1,4 +1,4 @@
-import {success} from "#core/util.js";
+import {BadRequest, success} from "#core/util.js";
 import {RouteBuilder as RouterBuilder} from "#core/routeBuilder.js";
 
 export class AuthController {
@@ -46,9 +46,28 @@ export class AuthController {
     }
   }
 
+  async update(req, res, next) {
+    try {
+
+      // Check if request body is empty
+      if (req.body === undefined || req.body === "" || Object.keys(req.body).length === 0) {
+        next(BadRequest("Data to update cannot be empty!"))
+        return;
+      }
+
+      const id = req.user._id;
+      const result = await this.service.update(id, req.body);
+      success(res, result);
+    }
+    catch (e) {
+      next(e)
+    }
+  }
+
   buildRouter() {
     return new RouterBuilder()
       .register("post", "/login", this.login.bind(this))
-      .register("post", "/register", this.register.bind(this));
+      .register("post", "/register", this.register.bind(this))
+      .register("put", "/update-info", this.update.bind(this));
   }
 }
