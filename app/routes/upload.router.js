@@ -1,6 +1,6 @@
 import express from "express";
 import {imageUploader} from "../middlewares/multer.js";
-import {fileUploader} from "../../storage.js";
+import {fileUploader} from "../../config/storage.js";
 import {BadRequest, success} from "#core/util.js";
 
 const uploaderRouter = express.Router();

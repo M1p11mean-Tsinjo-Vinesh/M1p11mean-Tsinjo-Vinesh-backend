@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
 import userRoute from "#routes/user.route.js";
-import * as db from "./db.js";
+import * as db from "./config/db.js";
 import cors from "cors";
 import {errorHandler} from "./app/middlewares/error-handler.js";
 import {queryObjectParser} from "./app/middlewares/query-object-parser.js";
@@ -11,7 +11,7 @@ import {authenticateToken} from "./app/middlewares/auth.middleware.js";
 import {crudEmployee, employeeAuthRouter} from "#routes/employee.route.js";
 import UserType from "./app/data/constant/UserType.js";
 import clientRoute from "#routes/client.route.js";
-import * as storage from "./storage.js";
+import * as storage from "./config/storage.js";
 import {uploaderRouter} from "#routes/upload.router.js";
 
 // dot env support
