@@ -13,6 +13,7 @@ import UserType from "./app/data/constant/UserType.js";
 import clientRoute from "#routes/client.route.js";
 import * as storage from "./config/storage.js";
 import {uploaderRouter} from "#routes/upload.router.js";
+import {serviceCrudRoute} from "#routes/service.route.js";
 
 // dot env support
 dotenv.config();
@@ -38,6 +39,7 @@ app.use("/users", authenticateToken([UserType.CLIENT, UserType.EMPLOYEE]));
 app.use("/clients/update-info", authenticateToken([UserType.CLIENT]));
 app.use("/employees-auth/update-info", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
 app.use("/employees", authenticateToken([UserType.MANAGER]));
+app.use("/services", authenticateToken([UserType.MANAGER]));
 
 app.use(
   cors({
@@ -51,6 +53,7 @@ app.use("/clients", clientRoute);
 app.use("/employees-auth", employeeAuthRouter);
 app.use("/employees", crudEmployee);
 app.use("/upload", uploaderRouter);
+app.use("/services", serviceCrudRoute);
 
 // handle throws or next(err) by async calls
 app.use(errorHandler);
