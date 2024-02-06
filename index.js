@@ -28,6 +28,13 @@ db.connect();
 // setup storage
 storage.setup();
 
+
+app.use(
+  cors({
+    origin: "http://localhost:4200",
+  }),
+);
+
 // middlewares
 // register middleware body Parser
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,11 +48,6 @@ app.use("/employees-auth/update-info", authenticateToken([UserType.EMPLOYEE, Use
 app.use("/employees", authenticateToken([UserType.MANAGER]));
 app.use("/services", authenticateToken([UserType.MANAGER]));
 
-app.use(
-  cors({
-    origin: "http://localhost:4200",
-  }),
-);
 
 // register routes
 app.use("/users", userRoute);
