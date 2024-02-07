@@ -47,6 +47,7 @@ app.use("/clients/update-info", authenticateToken([UserType.CLIENT]));
 app.use("/employees-auth/update-info", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
 app.use("/employees", authenticateToken([UserType.MANAGER]));
 app.use("/services", authenticateToken([UserType.MANAGER]));
+app.use("/upload", authenticateToken([UserType.MANAGER]));
 
 
 // register routes
