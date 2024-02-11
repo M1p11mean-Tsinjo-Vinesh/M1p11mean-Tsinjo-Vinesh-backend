@@ -5,7 +5,10 @@ import {RouteBuilder as RouterBuilder} from "#core/routeBuilder.js";
 export class AppointmentController extends CrudController {
 
   constructor(employeeService, servicesService) {
-    super(new AppointmentService(employeeService, servicesService));
+    super(
+      new AppointmentService(employeeService, servicesService),
+      ["date", "appointmentDate", "status"]
+    );
   }
 
   async create(req, res, next) {

@@ -14,10 +14,6 @@ export class AppointmentService extends CrudService {
     this.elementService = new CrudService(AppointmentDetailsModel);
   }
 
-  async findAllPaginated(page = 1, offset = 10, params) {
-    return super.findAllPaginated(page, offset, params);
-  }
-
   async create(data) {
     let appointment;
     try {
