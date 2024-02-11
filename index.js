@@ -15,6 +15,7 @@ import * as storage from "./config/storage.js";
 import {uploaderRouter} from "#routes/upload.router.js";
 import {serviceCrudRoute} from "#routes/service.route.js";
 import {appointmentRoute} from "#routes/appointment.route.js";
+import {crudOffer} from "#routes/offer.route.js";
 
 // dot env support
 dotenv.config();
@@ -38,7 +39,7 @@ app.use(
 
 // middlewares
 // register middleware body Parser
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(queryObjectParser);
 
@@ -50,6 +51,7 @@ app.use("/employees", authenticateToken([UserType.MANAGER]));
 app.use("/services", authenticateToken([UserType.MANAGER]));
 app.use("/upload", authenticateToken([UserType.MANAGER]));
 app.use("/appointments", authenticateToken([UserType.CLIENT]));
+app.use("/offers", authenticateToken([UserType.MANAGER]));
 
 
 // register routes
@@ -59,7 +61,8 @@ app.use("/employees-auth", employeeAuthRouter);
 app.use("/employees", crudEmployee);
 app.use("/upload", uploaderRouter);
 app.use("/services", serviceCrudRoute);
-app.use("/appointments", appointmentRoute)
+app.use("/appointments", appointmentRoute);
+app.use("/offers", crudOffer);
 
 // handle throws or next(err) by async calls
 app.use(errorHandler);
