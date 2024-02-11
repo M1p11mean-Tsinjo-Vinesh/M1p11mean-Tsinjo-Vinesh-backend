@@ -6,8 +6,8 @@ import {ReadController} from "#core/controllers/read-controller.js";
  */
 export class CrudController extends ReadController {
 
-  constructor(service) {
-    super(service);
+  constructor(service, allowedParams = []) {
+    super(service, allowedParams);
   }
 
   /**

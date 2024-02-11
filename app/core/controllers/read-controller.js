@@ -1,28 +1,28 @@
 import {success} from "#core/util.js";
 import {RouteBuilder as RouterBuilder} from "#core/routeBuilder.js";
+import {FilterOptionsBuilder} from "#core/filter-options.builder.js";
 
 export class ReadController {
+
   // The service responsible for CRUD operations
   service;
-
   // Express Router for CRUD routes
   route;
+  // params allowed for filter options
+  allowedParams;
 
-  /**
-   * Constructor for the CrudController class.
-   *
-   * @param {CrudService} service - The service for CRUD operations.
-   */
-  constructor(service) {
+  constructor(service, allowedParams = []) {
     this.service = service;
     this.route = this.buildRouter().build();
+    this.allowedParams = allowedParams;
   }
 
 
   async findAll(req, res, next) {
     try {
       const sort = {column, method} = req.query;
-      const all = await this.service.findAll({sort});
+      const search = this.createFilterOptions(req);
+      const all = await this.service.findAll({search, sort});
       success(res, all);
     }
     catch (e) {
@@ -43,7 +43,8 @@ export class ReadController {
       }
 
       // Retrieve and respond with paginated entities
-      const result = await this.service.findAllPaginated(parseInt(page), parseInt(offset), {sort: {column, method}});
+      const search = this.createFilterOptions(req);
+      const result = await this.service.findAllPaginated(parseInt(page), parseInt(offset), {search, sort: {column, method}});
       success(res, result);
     }
     catch (e) {
@@ -53,12 +54,20 @@ export class ReadController {
 
   async findById(req, res, next) {
     try {
-      const one = await this.service.findById(req.params.id);
+      const search = this.createFilterOptions(req);
+      search._id = req.params.id;
+      const one = await this.service.findOne(search);
       success(res, one);
     }
     catch (e) {
       next(e)
     }
+  }
+
+  createFilterOptions(req) {
+    return new FilterOptionsBuilder(req.query)
+      .setAllowedParams(this.allowedParams)
+      .build();
   }
 
   buildRouter() {
