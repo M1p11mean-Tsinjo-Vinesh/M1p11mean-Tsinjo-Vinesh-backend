@@ -19,17 +19,10 @@ export class ReadController {
   }
 
 
-  /**
-   * Handles the retrieval of all entities.
-   *
-   * @param {Express.Request} req - The Express request object.
-   * @param {Express.Response} res - The Express response object.
-   * @param {Express.NextFunction} next - The Express next function.
-   */
   async findAll(req, res, next) {
     try {
-      const {column, method} = req.query;
-      const all = await this.service.findAll({column, method});
+      const sort = {column, method} = req.query;
+      const all = await this.service.findAll({sort});
       success(res, all);
     }
     catch (e) {
@@ -37,13 +30,6 @@ export class ReadController {
     }
   }
 
-  /**
-   * Handles the retrieval of entities in a paginated manner.
-   *
-   * @param {Express.Request} req - The Express request object.
-   * @param {Express.Response} res - The Express response object.
-   * @param {Express.NextFunction} next - The Express next function.
-   */
   async findAllPaginated(req, res, next) {
     try {
       let { page, offset, column, method } = req.query;
@@ -57,7 +43,7 @@ export class ReadController {
       }
 
       // Retrieve and respond with paginated entities
-      const result = await this.service.findAllPaginated(parseInt(page), parseInt(offset), {column, method});
+      const result = await this.service.findAllPaginated(parseInt(page), parseInt(offset), {sort: {column, method}});
       success(res, result);
     }
     catch (e) {
@@ -65,13 +51,6 @@ export class ReadController {
     }
   }
 
-  /**
-   * Handles the retrieval of an entity by ID.
-   *
-   * @param {Express.Request} req - The Express request object.
-   * @param {Express.Response} res - The Express response object.
-   * @param {Express.NextFunction} next - The Express next function.
-   */
   async findById(req, res, next) {
     try {
       const one = await this.service.findById(req.params.id);
@@ -82,12 +61,6 @@ export class ReadController {
     }
   }
 
-  /**
-   * Builds and returns the Express Router with CRUD routes.
-   *
-   * @returns {RouteBuilder} The configured Express Router.
-   * @private
-   */
   buildRouter() {
     return new RouterBuilder()
       .register("get", '/', (...args) => this.findAllPaginated(...args))

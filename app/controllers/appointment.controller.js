@@ -20,7 +20,8 @@ export class AppointmentController extends CrudController {
 
   buildRouter() {
     return new RouterBuilder()
-      .register("post", '/', this.create.bind(this));
+      .register("post", '/', this.create.bind(this))
+      .register("get", '/', this.findAllPaginated.bind(this));
   }
 
 }
