@@ -8,19 +8,22 @@ const appointmentSchema = new mongoose.Schema({
     required: true
   },
   client: {
-    id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Client',
-      required: true
+    type:  {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Client',
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      email: {
+        type: String,
+        required: true
+      }
     },
-    name: {
-      type: String,
-      required: true
-    },
-    email: {
-      type: String,
-      required: true
-    }
+    required: true
   },
   status: {
     type: Number,
@@ -28,75 +31,75 @@ const appointmentSchema = new mongoose.Schema({
     default: 0,
     required: true
   },
-  comments: {
-    type: [
-      {
-        author: {
-          id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true
-          },
-          name: {
-            type: String,
-            required: true
-          },
-          authorType: {
-            type: String,
-            enum: ["EMPLOYEE", "CLIENT"],
-          }
+  comments: [
+    {
+      author: {
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true
         },
-        text: {
+        name: {
           type: String,
           required: true
         },
-        date: {
-          type: Date,
-          required: true
+        authorType: {
+          type: String,
+          enum: ["EMPLOYEE", "CLIENT"],
         }
+      },
+      text: {
+        type: String,
+        required: true
+      },
+      date: {
+        type: Date,
+        required: true
       }
-    ]
-  }
+    }
+  ]
 });
 
 
 const appointmentDetailsSchema = new mongoose.Schema({
-  date: {
-    type: Date,
-    required: true
-  },
   client: {
-    id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Client',
-      required: true
+    type: {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Client',
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      email: {
+        type: String,
+        required: true
+      }
     },
-    name: {
-      type: String,
-      required: true
-    },
-    email: {
-      type: String,
-      required: true
-    }
+    required: true
   },
   appointmentId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true
   },
   employee: {
-    id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Employee',
-      required: true
+    type: {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee',
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      email: {
+        type: String,
+        required: true
+      }
     },
-    name: {
-      type: String,
-      required: true
-    },
-    email: {
-      type: String,
-      required: true
-    }
+    required: true
   },
   service: {
     type: serviceSchema,
