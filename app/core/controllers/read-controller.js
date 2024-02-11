@@ -54,7 +54,9 @@ export class ReadController {
 
   async findById(req, res, next) {
     try {
-      const one = await this.service.findById(req.params.id);
+      const search = this.createFilterOptions(req);
+      search._id = req.params.id;
+      const one = await this.service.findOne(search);
       success(res, one);
     }
     catch (e) {
