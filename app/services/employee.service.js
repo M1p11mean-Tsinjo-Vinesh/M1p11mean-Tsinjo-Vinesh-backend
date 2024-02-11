@@ -1,8 +1,13 @@
 import {CrudService} from "#core/services/crud-service.js";
 import {hash} from "#core/util.js";
 import {AuthService} from "#core/services/auth.service.js";
+import {EmployeeModel} from "#models/employee.model.js";
 
 export class EmployeeService extends CrudService {
+
+  constructor() {
+    super(EmployeeModel, ["password"]);
+  }
 
 
   // 1234 default password for every user
