@@ -8,7 +8,7 @@ dotenv.config();
 
 const keys = [process.env.CLOUD_NAME, process.env.FILE_FOLDER];
 
-const serviceSchema = new mongoose.Schema({
+export const serviceSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
