@@ -14,6 +14,22 @@ export class AppointmentService extends CrudService {
     this.elementService = new CrudService(AppointmentDetailsModel);
   }
 
+  async findOne(search) {
+    const found = (await super.findOne(search))._doc;
+    if (found) {
+      found.elements = (await this.elementService.findAll({
+        sort: {
+          column: "startDate",
+          method: 1
+        },
+        search: {
+          appointmentId: found._id
+        }
+      })).map(elt => elt._doc);
+    }
+    return found;
+  }
+
   async create(data) {
     let appointment;
     try {
