@@ -7,9 +7,13 @@ const appointmentSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  appointmentDate: {
+    type: Date,
+    required: true
+  },
   client: {
     type:  {
-      id: {
+      _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Client',
         required: true
@@ -63,7 +67,7 @@ const appointmentSchema = new mongoose.Schema({
 const appointmentDetailsSchema = new mongoose.Schema({
   client: {
     type: {
-      id: {
+      _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Client',
         required: true

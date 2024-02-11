@@ -18,10 +18,11 @@ export class AppointmentService extends CrudService {
     let appointment;
     try {
       const {date, elements, ...rest} = data;
-      if (!date) rest.date = new Date();
+      rest.date = !date ? new Date() : date;
       rest.status = 0;
-      appointment = await super.create(data);
-      await this.createElements(appointment, elements);
+      appointment = await super.create(rest);
+      appointment.elements = await this.createElements(appointment, elements);
+      return appointment;
     }
     catch (e) {
       if (appointment) {
@@ -34,11 +35,11 @@ export class AppointmentService extends CrudService {
   async createElements(appointment, elements) {
     const createdList = [];
     try {
-      let startDate = appointment.date;
+      let startDate = appointment.appointmentDate;
       for (let element of elements) {
         // create element;
         await this.setElementField(element);
-        element.startData = startDate;
+        element.startDate = startDate;
         element.appointmentId = appointment._id;
         element.client = appointment.client;
         createdList.push(await this.elementService.create(element));
@@ -46,6 +47,7 @@ export class AppointmentService extends CrudService {
         // update start Date for next in appointment elements
         startDate = new Date(startDate.getTime() + element.service.duration * 60000);
       }
+      return createdList;
     }
     catch (e) {
       AppointmentDetailsModel.deleteMany({
