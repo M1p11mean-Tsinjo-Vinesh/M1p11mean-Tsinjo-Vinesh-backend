@@ -59,5 +59,9 @@ export class ReadService {
     return await this.Model.findOne(search, this.projection);
   }
 
+  async findById(id) {
+    return await this.Model.findById(id, this.projection);
+  }
+
 
 }
