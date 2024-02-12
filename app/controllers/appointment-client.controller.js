@@ -2,7 +2,7 @@ import {CrudController} from "#core/controllers/crud-controller.js";
 import {AppointmentService} from "#services/appointment.service.js";
 import {RouteBuilder as RouterBuilder} from "#core/routeBuilder.js";
 
-export class AppointmentController extends CrudController {
+export class AppointmentClientController extends CrudController {
 
   constructor(employeeService, servicesService) {
     super(

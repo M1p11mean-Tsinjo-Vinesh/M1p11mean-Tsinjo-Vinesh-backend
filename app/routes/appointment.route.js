@@ -1,6 +1,6 @@
-import {AppointmentController} from "#controllers/appointment.controller.js";
+import {AppointmentClientController} from "#controllers/appointment-client.controller.js";
 import {servicesService} from "#routes/service.route.js";
 import {employeeService} from "#routes/employee.route.js";
 
-const controller = new AppointmentController(employeeService, servicesService);
+const controller = new AppointmentClientController(employeeService, servicesService);
 export const appointmentRoute = controller.route;
