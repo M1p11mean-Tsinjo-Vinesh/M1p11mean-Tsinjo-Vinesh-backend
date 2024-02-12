@@ -29,10 +29,6 @@ export class AppointmentController extends CrudController {
     await super.create(req, res, next);
   }
 
-  async findById(req, res, next) {
-    await super.findById(req, res, next);
-  }
-
   buildRouter() {
     return new RouterBuilder()
       .register("post", '/', this.create.bind(this))
