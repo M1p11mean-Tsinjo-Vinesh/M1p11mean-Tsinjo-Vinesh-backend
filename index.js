@@ -13,7 +13,7 @@ import clientRoute from "#routes/client.route.js";
 import * as storage from "./config/storage.js";
 import {uploaderRouter} from "#routes/upload.router.js";
 import {serviceCrudRoute} from "#routes/service.route.js";
-import {appointmentClientRoute, appointmentManagerRoute} from "#routes/appointmentClientRoute.js";
+import {appointmentClientRoute, appointmentEmployeeRoute, appointmentManagerRoute} from "#routes/appointment.route.js";
 import {crudOffer} from "#routes/offer.route.js";
 
 // dot env support
@@ -51,6 +51,7 @@ app.use("/upload", authenticateToken([UserType.MANAGER]));
 app.use("/appointments", authenticateToken([UserType.CLIENT]));
 app.use("/offers", authenticateToken([UserType.MANAGER]));
 app.use("/manager/appointments", authenticateToken([UserType.MANAGER]));
+app.use("/employee/appointments", authenticateToken([UserType.EMPLOYEE]));
 
 
 // register routes
@@ -63,6 +64,7 @@ app.use("/services", serviceCrudRoute);
 app.use("/appointments", appointmentClientRoute);
 app.use("/manager/appointments", appointmentManagerRoute);
 app.use("/offers", crudOffer);
+app.use("/employee/appointments", appointmentEmployeeRoute)
 
 // handle throws or next(err) by async calls
 app.use(errorHandler);
