@@ -4,7 +4,7 @@ import axios from "axios";
 // dot env support
 dotenv.config();
 
-export class Mailer {
+class Mailer {
 
   SENDER = process.env.MAIL_SENDER;
   API_KEY = process.env.MAIL_API_KEY;
@@ -63,7 +63,6 @@ export class Mailer {
     }
   }
 
-
-
-
 }
+
+export const mailer = new Mailer();

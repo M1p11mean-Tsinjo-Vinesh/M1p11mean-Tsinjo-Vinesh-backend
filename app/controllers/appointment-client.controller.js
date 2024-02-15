@@ -15,7 +15,6 @@ export class AppointmentClientController extends CrudController {
     const filterOptions =  super.createFilterOptions(req);
     // only finds his own data
     filterOptions["client._id"] = req.user._id;
-    console.log(filterOptions);
     return filterOptions;
   }
 

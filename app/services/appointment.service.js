@@ -1,5 +1,8 @@
 import {CrudService} from "#core/services/crud-service.js";
 import {AppointmentDetailsModel, AppointmentModel} from "#models/appointment.model.js";
+import {mailContentBuilder} from "#services/mail-content-builder.js";
+import {mailer} from "#core/services/mailer.js";
+import {BadRequest} from "#core/util.js";
 
 export class AppointmentService extends CrudService {
 
@@ -13,6 +16,41 @@ export class AppointmentService extends CrudService {
     this.servicesService = servicesService;
     this.elementService = new CrudService(AppointmentDetailsModel);
   }
+
+  /**
+   * Sends a reminder via email to the client based on his appointment.
+   * The provided appointment should have all its elements.
+   * @param appointment
+   * @returns {Promise<Awaited<unknown>[]>}
+   */
+  async sendAlertsForAppointment(appointment) {
+    const {appointmentDate} = appointment;
+    const content = mailContentBuilder.forAppointmentReminder(appointment);
+    const dates = this.calculateDatesForReminder(appointmentDate);
+    const recipients = [appointment.client.email]
+    const subject = `[m1pp11mean-Tsinjo-Vinesh] Rappel de votre rendez vous pour le ${new Date(appointmentDate).toLocaleDateString()}`;
+    return await mailer.send({dates, recipients, subject, content});
+  }
+
+
+  /**
+   * Creates an array of date to remind the client.
+   * The client will be reminded on the day this function is called,
+   * in the middle of the time between the current date and the date
+   * of the appointment, 10 minutes before and on the actual date
+   * @param appointmentDate
+   * @returns number[]
+   */
+  calculateDatesForReminder(appointmentDate) {
+    const now = new Date().getTime();
+    const date = new Date(appointmentDate).getTime();
+    if (now >= date) {
+      throw BadRequest("Date de rendez-vous invalide");
+    }
+    const diff = date - now;
+    return [now, now + diff/2, date - (60000 * 10), date]
+  }
+
 
   async findOne(search) {
     const found = (await super.findOne(search))._doc;
@@ -34,6 +72,9 @@ export class AppointmentService extends CrudService {
     let appointment;
     try {
       const {date, elements, ...rest} = data;
+      if (!this.isAppointmentDateValid(rest.appointmentDate)) {
+        throw BadRequest("Date de rendez-vous invalide");
+      }
       rest.date = !date ? new Date() : date;
       rest.status = 0;
       appointment = await super.create(rest);
@@ -46,6 +87,10 @@ export class AppointmentService extends CrudService {
       }
       throw e;
     }
+  }
+
+  isAppointmentDateValid(appointmentDate) {
+    return new Date().getTime() < new Date(appointmentDate).getTime();
   }
 
   async createElements(appointment, elements) {
