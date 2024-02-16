@@ -5,7 +5,7 @@ import {AppointmentDetailsModel} from "#models/appointment.model.js";
 export class AppointmentEmployeeController extends ReadController {
 
   constructor() {
-    super(new CrudService(AppointmentDetailsModel), ["client._id", "service._id", "startDate"]);
+    super(new CrudService(AppointmentDetailsModel), ["client._id", "service._id", "startDate", "status"]);
   }
 
   createFilterOptions(req) {
