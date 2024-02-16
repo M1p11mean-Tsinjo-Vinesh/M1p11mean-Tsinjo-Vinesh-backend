@@ -14,6 +14,7 @@ export class AppointmentManagerController extends ReadController {
   async validateAppointment(req, res, next) {
     try {
       await this.service.updateStatus(req.params.id, 10);
+      await this.service.sendAlertsForAppointmentId(req.params.id);
       respond(res, 204);
     }
     catch (e) {

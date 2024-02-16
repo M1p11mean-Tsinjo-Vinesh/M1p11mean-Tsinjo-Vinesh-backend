@@ -47,6 +47,16 @@ export class AppointmentService extends CrudService {
   }
 
   /**
+   * Send alerts to a client from his appointment id
+   * @param appointmentId
+   * @returns {Promise<Awaited<*>[]>}
+   */
+  async sendAlertsForAppointmentId(appointmentId) {
+    const appointment = await this.findOne({_id: appointmentId});
+    return await this.sendAlertsForAppointment(appointment);
+  }
+
+  /**
    * Sends a reminder via email to the client based on his appointment.
    * The provided appointment should have all its elements.
    * @param appointment
