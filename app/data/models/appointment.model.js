@@ -31,6 +31,12 @@ const appointmentSchema = new mongoose.Schema({
   },
   status: {
     type: Number,
+    /**
+     * -10 -> CANCELED,
+     * 0 -> CREATED,
+     * 10 -> VALIDATED
+     * 20 -> PAID
+     */
     enum: [-10, 0, 10, 20],
     default: 0,
     required: true
