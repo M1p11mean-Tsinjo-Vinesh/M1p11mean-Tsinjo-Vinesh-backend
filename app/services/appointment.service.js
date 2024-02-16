@@ -67,7 +67,7 @@ export class AppointmentService extends CrudService {
     const content = mailContentBuilder.forAppointmentReminder(appointment);
     const dates = this.calculateDatesForReminder(appointmentDate);
     const recipients = [appointment.client.email]
-    const subject = `[m1pp11mean-Tsinjo-Vinesh] Rappel de votre rendez vous pour le ${new Date(appointmentDate).toLocaleDateString()}`;
+    const subject = `[m1pp11mean-Tsinjo-Vinesh] Rappel de votre rendez vous  le ${new Date(appointmentDate).toLocaleString()}-> ${appointment._id}`;
     return await mailer.send({dates, recipients, subject, content});
   }
 

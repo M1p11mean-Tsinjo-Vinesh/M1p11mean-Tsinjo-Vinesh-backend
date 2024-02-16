@@ -1,6 +1,6 @@
 function forAppointmentReminder(appointment) {
   // Format date
-  const formattedDate = new Date(appointment.appointmentDate).toLocaleDateString();
+  const formattedDate = new Date(appointment.appointmentDate).toLocaleString();
 
   // Format prices
   const formattedElements = appointment.elements.map(element => {
@@ -46,7 +46,7 @@ function forAppointmentReminder(appointment) {
                 ${formattedElements}
             </table>
 
-            <p>Merci de votre confiance, et à bientôt!</p>
+            <p>Merci de votre confiance, et à bientôt !</p>
         </div>
     `;
 }
