@@ -20,7 +20,7 @@ export class AppointmentService extends CrudService {
   }
 
   async calculatePrice(appointmentId) {
-    const result = await this.elementService.Model.aggregate([
+    return await this.elementService.Model.aggregate([
       {
         $match: {
           appointmentId: new mongoose.Types.ObjectId(appointmentId)
@@ -33,7 +33,6 @@ export class AppointmentService extends CrudService {
         }
       }
     ]);
-    return result;
   }
 
   /**
