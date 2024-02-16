@@ -5,9 +5,9 @@ import {BadRequest, respond} from "#core/util.js";
 
 export class AppointmentClientController extends CrudController {
 
-  constructor(employeeService, servicesService) {
+  constructor(appointmentService) {
     super(
-      new AppointmentService(employeeService, servicesService),
+      appointmentService,
       ["date", "appointmentDate", "status"]
     );
   }

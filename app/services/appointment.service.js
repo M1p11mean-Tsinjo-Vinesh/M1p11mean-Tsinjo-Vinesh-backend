@@ -4,6 +4,7 @@ import {mailContentBuilder} from "#services/mail-content-builder.js";
 import {mailer} from "#core/services/mailer.js";
 import {BadRequest} from "#core/util.js";
 import {AppointmentDetailsService} from "#services/appointment-details.service.js";
+import mongoose from "mongoose";
 
 export class AppointmentService extends CrudService {
 
@@ -16,6 +17,23 @@ export class AppointmentService extends CrudService {
     this.employeeService = employeeService;
     this.servicesService = servicesService;
     this.elementService = new AppointmentDetailsService();
+  }
+
+  async calculatePrice(appointmentId) {
+    const result = await this.elementService.Model.aggregate([
+      {
+        $match: {
+          appointmentId: new mongoose.Types.ObjectId(appointmentId)
+        }
+      },
+      {
+        $group: {
+          _id: "$appointmentId",
+          price: {$sum: '$service.price'}
+        }
+      }
+    ]);
+    return result;
   }
 
   /**

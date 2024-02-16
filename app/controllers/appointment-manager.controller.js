@@ -1,12 +1,11 @@
 import {ReadController} from "#core/controllers/read-controller.js";
-import {AppointmentService} from "#services/appointment.service.js";
 import {respond} from "#core/util.js";
 
 export class AppointmentManagerController extends ReadController {
 
-  constructor(employeeService, servicesService) {
+  constructor(appointmentService) {
     super(
-      new AppointmentService(employeeService, servicesService),
+      appointmentService,
       ["date", "appointmentDate", "status", "client._id"]
     );
   }

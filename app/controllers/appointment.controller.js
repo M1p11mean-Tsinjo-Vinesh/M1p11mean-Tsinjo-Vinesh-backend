@@ -7,8 +7,8 @@ export class AppointmentController {
   route;
   service;
 
-  constructor() {
-    this.service = new AppointmentService();
+  constructor(appointmentService) {
+    this.service = appointmentService;
     this.route = this.buildRouter().build();
   }
 

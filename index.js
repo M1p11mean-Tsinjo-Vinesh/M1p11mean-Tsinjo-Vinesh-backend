@@ -20,6 +20,7 @@ import {
   appointmentManagerRoute
 } from "#routes/appointment.route.js";
 import {crudOffer} from "#routes/offer.route.js";
+import {paymentRoute} from "#routes/payment.route.js";
 
 // dot env support
 dotenv.config();
@@ -72,6 +73,7 @@ app.use("/manager/appointments", appointmentManagerRoute);
 app.use("/offers", crudOffer);
 app.use("/employee/appointments", appointmentEmployeeRoute)
 app.use("/appointment-common", appointmentCommonRoute);
+app.use("/payment", paymentRoute);
 
 // handle throws or next(err) by async calls
 app.use(errorHandler);
