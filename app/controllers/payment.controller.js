@@ -14,7 +14,7 @@ export class PaymentController {
 
   async payAppointment(req, res, next){
     try {
-      const result = await this.paymentService.payAppointment(req.params.id);
+      const result = await this.paymentService.payAppointment(req.params.id, req.body.phoneNumber);
       success(res, result);
     }
     catch (e) {
