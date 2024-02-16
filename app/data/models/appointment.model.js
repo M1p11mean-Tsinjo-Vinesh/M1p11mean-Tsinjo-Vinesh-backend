@@ -44,7 +44,7 @@ const appointmentSchema = new mongoose.Schema({
   comments: [
     {
       author: {
-        id: {
+        _id: {
           type: mongoose.Schema.Types.ObjectId,
           required: true
         },
@@ -54,7 +54,7 @@ const appointmentSchema = new mongoose.Schema({
         },
         authorType: {
           type: String,
-          enum: ["EMPLOYEE", "CLIENT"],
+          enum: ["EMPLOYEE", "CLIENT", "MANAGER"],
         }
       },
       text: {
