@@ -13,6 +13,18 @@ export class PaymentService {
   }
 
   /**
+   * verify if the client owns the appointment.
+   * @param clientId
+   * @param appointmentId
+   */
+  async verifyClient(clientId, appointmentId) {
+    return (await this.appointmentService.Model.countDocuments({
+      _id: appointmentId,
+      "client._id": clientId
+    })) > 0;
+  }
+
+  /**
    * Simulates payment with mobile money, when a client wants to pay for an appointment
    * they made or the manager wants to register the payment.
    * @param appointmentId

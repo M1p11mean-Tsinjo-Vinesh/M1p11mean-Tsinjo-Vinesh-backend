@@ -22,9 +22,9 @@ const paymentSchema = new mongoose.Schema({
     type: {
       phoneNumber: {
         type: String,
-        required: true
       }
     },
+    default: {},
     required: true
   }
 });
