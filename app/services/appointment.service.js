@@ -3,6 +3,7 @@ import {AppointmentDetailsModel, AppointmentModel} from "#models/appointment.mod
 import {mailContentBuilder} from "#services/mail-content-builder.js";
 import {mailer} from "#core/services/mailer.js";
 import {BadRequest} from "#core/util.js";
+import {AppointmentDetailsService} from "#services/appointment-details.service.js";
 
 export class AppointmentService extends CrudService {
 
@@ -14,7 +15,7 @@ export class AppointmentService extends CrudService {
     super(AppointmentModel);
     this.employeeService = employeeService;
     this.servicesService = servicesService;
-    this.elementService = new CrudService(AppointmentDetailsModel);
+    this.elementService = new AppointmentDetailsService();
   }
 
   /**
@@ -53,7 +54,7 @@ export class AppointmentService extends CrudService {
 
 
   async findOne(search) {
-    const found = (await super.findOne(search))._doc;
+    const found = (await super.findOne(search))?._doc;
     if (found) {
       found.elements = (await this.elementService.findAll({
         sort: {

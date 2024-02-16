@@ -115,6 +115,18 @@ const appointmentDetailsSchema = new mongoose.Schema({
     type: serviceSchema,
     required: true
   },
+  status: {
+    type: Number,
+    /**
+     * -10 -> CANCELED,
+     * 0 -> CREATED
+     * 10 -> VALIDATED
+     * 30 -> DONE
+     */
+    enum: [-10, 0, 10, 30],
+    default: 0,
+    required: true
+  },
   startDate: {
     type: Date,
     required: true
