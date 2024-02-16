@@ -59,6 +59,7 @@ app.use("/offers", authenticateToken([UserType.MANAGER]));
 app.use("/manager/appointments", authenticateToken([UserType.MANAGER]));
 app.use("/employee/appointments", authenticateToken([UserType.EMPLOYEE]));
 app.use("/appointment-common", authenticateToken([UserType.CLIENT, UserType.MANAGER]));
+app.use("/payment", authenticateToken([UserType.CLIENT, UserType.MANAGER]));
 
 
 // register routes

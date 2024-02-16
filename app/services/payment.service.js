@@ -12,6 +12,13 @@ export class PaymentService {
     this.service = new CrudService(PaymentModel);
   }
 
+  /**
+   * Simulates payment with mobile money, when a client wants to pay for an appointment
+   * they made or the manager wants to register the payment.
+   * @param appointmentId
+   * @param phoneNumber
+   * @returns {Promise<*>}
+   */
   async payAppointment(appointmentId, phoneNumber) {
     const [total] = await this.appointmentService.calculatePrice(appointmentId);
     if (total) {
