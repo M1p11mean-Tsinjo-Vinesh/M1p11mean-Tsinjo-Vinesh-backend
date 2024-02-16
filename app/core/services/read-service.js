@@ -46,7 +46,7 @@ export class ReadService {
       .sort({ createdAt: -1 });
 
     const elements = await this.sortQuery(query, sort);
-    const count = await this.Model.countDocuments();
+    const count = await this.Model.countDocuments(search);
     return {
       elements,
       count,
