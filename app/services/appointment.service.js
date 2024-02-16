@@ -91,6 +91,12 @@ export class AppointmentService extends CrudService {
   }
 
 
+  /**
+   * Finds one appointment based on filter.
+   * If we found one, it will be returned with all its elements
+   * @param search
+   * @returns {Promise<*>}
+   */
   async findOne(search) {
     const found = (await super.findOne(search))?._doc;
     if (found) {
@@ -107,6 +113,11 @@ export class AppointmentService extends CrudService {
     return found;
   }
 
+  /**
+   * Creates on appointment with all it details
+   * @param data
+   * @returns {Promise<*>}
+   */
   async create(data) {
     let appointment;
     try {
@@ -128,10 +139,21 @@ export class AppointmentService extends CrudService {
     }
   }
 
+  /**
+   * Verifies if the appointment Date is greater than the current date
+   * @param appointmentDate
+   * @returns {boolean}
+   */
   isAppointmentDateValid(appointmentDate) {
     return new Date().getTime() < new Date(appointmentDate).getTime();
   }
 
+  /**
+   * Create each element of the appointment
+   * @param appointment
+   * @param elements
+   * @returns {Promise<*[]>}
+   */
   async createElements(appointment, elements) {
     const createdList = [];
     try {
