@@ -19,6 +19,16 @@ export class AppointmentService extends CrudService {
   }
 
   /**
+   * Adds comment to the appointment
+   * @param appointmentId
+   * @param comment
+   * @returns {Promise<*>}
+   */
+  async addComment(appointmentId, comment) {
+    return await this.update(appointmentId, {$push: {comments: comment}});
+  }
+
+  /**
    * Sends a reminder via email to the client based on his appointment.
    * The provided appointment should have all its elements.
    * @param appointment
