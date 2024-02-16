@@ -121,6 +121,7 @@ const appointmentDetailsSchema = new mongoose.Schema({
      * -10 -> CANCELED,
      * 0 -> CREATED
      * 10 -> VALIDATED
+     * 20 -> PAID
      * 30 -> DONE
      */
     enum: [-10, 0, 10, 30],

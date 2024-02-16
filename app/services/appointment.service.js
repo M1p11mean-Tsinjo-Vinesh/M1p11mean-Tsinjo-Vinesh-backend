@@ -19,7 +19,25 @@ export class AppointmentService extends CrudService {
   }
 
   /**
-   * Adds comment to the appointment
+   * Updates the status of the appointent and its details.
+   * If the appointment was already canceled, the update won't work.
+   * If the appointment is validated, status can no longer be reduced.
+   * @param appointmentId
+   * @param status
+   * @returns {Promise<void>}
+   */
+  async updateStatus(appointmentId, status) {
+    const appointment = await this.findAllPaginated(appointmentId);
+    if (appointment.status < 0) throw BadRequest("Vous ne pouvez plus changer l'état de ce rendez-vous");
+    if (appointment.status >= 10 && (status - appointment.status) <= 0) {
+      throw BadRequest("Changement d'etat invalide");
+    }
+    this.update(appointmentId, {status});
+    this.elementService.Model.updateMany({appointmentId}, {status});
+  }
+
+  /**
+   * Adds comment on the appointment
    * @param appointmentId
    * @param comment
    * @returns {Promise<*>}
