@@ -1,6 +1,7 @@
 import {CrudController} from "#core/controllers/crud-controller.js";
 import {AppointmentService} from "#services/appointment.service.js";
 import {RouteBuilder as RouterBuilder} from "#core/routeBuilder.js";
+import {BadRequest, respond} from "#core/util.js";
 
 export class AppointmentClientController extends CrudController {
 
@@ -9,6 +10,19 @@ export class AppointmentClientController extends CrudController {
       new AppointmentService(employeeService, servicesService),
       ["date", "appointmentDate", "status"]
     );
+  }
+
+  async cancelAppointment(req, res, next) {
+    try {
+      const appointment = this.service.findOne({_id: req.params.id});
+      if (appointment) {
+        await this.service.updateStatus(req.params.id, -10);
+      }
+      respond(res, 204);
+    }
+    catch (e) {
+      next(e);
+    }
   }
 
   createFilterOptions(req) {
@@ -32,7 +46,8 @@ export class AppointmentClientController extends CrudController {
     return new RouterBuilder()
       .register("post", '/', this.create.bind(this))
       .register("get", '/', this.findAllPaginated.bind(this))
-      .register("get", '/:id', this.findById.bind(this));
+      .register("get", '/:id', this.findById.bind(this))
+      .register("delete", "/:id", this.cancelAppointment.bind(this));
   }
 
 }

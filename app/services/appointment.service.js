@@ -27,13 +27,13 @@ export class AppointmentService extends CrudService {
    * @returns {Promise<void>}
    */
   async updateStatus(appointmentId, status) {
-    const appointment = await this.findAllPaginated(appointmentId);
+    const appointment = await this.findById(appointmentId);
     if (appointment.status < 0) throw BadRequest("Vous ne pouvez plus changer l'état de ce rendez-vous");
     if (appointment.status >= 10 && (status - appointment.status) <= 0) {
       throw BadRequest("Changement d'etat invalide");
     }
-    this.update(appointmentId, {status});
-    this.elementService.Model.updateMany({appointmentId}, {status});
+    await this.update(appointmentId, {status});
+    await this.elementService.Model.updateMany({appointmentId}, {status});
   }
 
   /**
