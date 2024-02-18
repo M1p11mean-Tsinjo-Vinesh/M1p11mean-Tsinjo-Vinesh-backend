@@ -27,6 +27,9 @@ const schema = new mongoose.Schema({
     enum: ["EMPLOYEE", "MANAGER"],
     required: true,
   },
+  shifts: {
+    type: Object,
+  },
 });
 
 export const EmployeeModel = new mongoose.model("Employee", schema);

@@ -17,7 +17,7 @@ import {
   appointmentClientRoute,
   appointmentCommonRoute,
   appointmentEmployeeRoute,
-  appointmentManagerRoute
+  appointmentManagerRoute,
 } from "#routes/appointment.route.js";
 import {crudOffer} from "#routes/offer.route.js";
 import {paymentRoute} from "#routes/payment.route.js";
@@ -36,22 +36,24 @@ db.connect();
 // setup storage
 storage.setup();
 
-
 app.use(
   cors({
-    origin: "http://localhost:4200",
+    origin: ["http://localhost:4200", "http://192.168.88.2:4200"],
   }),
 );
 
 // middlewares
 // register middleware body Parser
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Use of the authentication middleware
 app.use("/users", authenticateToken([UserType.CLIENT, UserType.EMPLOYEE]));
 app.use("/clients/update-info", authenticateToken([UserType.CLIENT]));
-app.use("/employees-auth/update-info", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
+app.use(
+  "/employees-auth/update-info",
+  authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]),
+);
 app.use("/employees", authenticateToken([UserType.MANAGER]));
 app.use("/services", authenticateToken([UserType.MANAGER]));
 app.use("/upload", authenticateToken([UserType.MANAGER]));
@@ -59,10 +61,12 @@ app.use("/appointments", authenticateToken([UserType.CLIENT]));
 app.use("/offers", authenticateToken([UserType.MANAGER]));
 app.use("/manager/appointments", authenticateToken([UserType.MANAGER]));
 app.use("/employee/appointments", authenticateToken([UserType.EMPLOYEE]));
-app.use("/appointment-common", authenticateToken([UserType.CLIENT, UserType.MANAGER]));
+app.use(
+  "/appointment-common",
+  authenticateToken([UserType.CLIENT, UserType.MANAGER]),
+);
 app.use("/payment", authenticateToken([UserType.CLIENT, UserType.MANAGER]));
 app.use("/recap", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
-
 
 // register routes
 app.use("/users", userRoute);
@@ -74,7 +78,7 @@ app.use("/services", serviceCrudRoute);
 app.use("/appointments", appointmentClientRoute);
 app.use("/manager/appointments", appointmentManagerRoute);
 app.use("/offers", crudOffer);
-app.use("/employee/appointments", appointmentEmployeeRoute)
+app.use("/employee/appointments", appointmentEmployeeRoute);
 app.use("/appointment-common", appointmentCommonRoute);
 app.use("/payment", paymentRoute);
 app.use("/recap", recapRoute);

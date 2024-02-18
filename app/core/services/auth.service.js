@@ -1,8 +1,8 @@
-import {BadRequest, hash} from "#core/util.js";
+import { BadRequest, hash } from "#core/util.js";
 import jwt from "jsonwebtoken";
-import {validateEmail, validatePhone} from "../../common/validators.js";
+import { validateEmail, validatePhone } from "../../common/validators.js";
 import Errors from "../../common/Errors.js";
-import {ClientModel} from "#models/client.model.js";
+import { ClientModel } from "#models/client.model.js";
 import UserType from "../../data/constant/UserType.js";
 
 export class AuthService {
@@ -42,6 +42,7 @@ export class AuthService {
           role: user.employeeType
             ? this.roleMapping[user.employeeType]
             : this.roleMapping[this.Modal],
+          shifts: user.shifts ? user.shifts : [],
         },
         process.env.TOKEN_SECRET,
         {
@@ -115,8 +116,9 @@ export class AuthService {
     rest.password = hash(confirmPassword);
 
     // Call the update method from the parent class (CrudService)
-    const updatedUser = await this.Modal.findByIdAndUpdate(id, rest, { new: true });
-
+    const updatedUser = await this.Modal.findByIdAndUpdate(id, rest, {
+      new: true,
+    });
 
     const { password, ...updateData } = updatedUser._doc;
     // Return the updated data without the password field
