@@ -20,7 +20,8 @@ export class ReadController {
 
   async findAll(req, res, next) {
     try {
-      const sort = {column, method} = req.query;
+      let {column, method} = req.query;
+      const sort= {column, method};
       const search = this.createFilterOptions(req);
       const all = await this.service.findAll({search, sort});
       success(res, all);

@@ -66,7 +66,23 @@ const appointmentSchema = new mongoose.Schema({
         required: true
       }
     }
-  ]
+  ],
+  estimatedPrice: {
+    type: Number,
+    required: true,
+    validate: {
+      validator: value => value > 0,
+      message: "Prix invalide"
+    }
+  },
+  estimatedDuration: {
+    type: Number,
+    required: true,
+    validate: {
+      validator: value => value > 0,
+      message: "Duration invalide"
+    }
+  }
 });
 
 

@@ -4,7 +4,6 @@ import {mailContentBuilder} from "#services/mail-content-builder.js";
 import {mailer} from "#core/services/mailer.js";
 import {BadRequest} from "#core/util.js";
 import {AppointmentDetailsService} from "#services/appointment-details.service.js";
-import mongoose from "mongoose";
 
 export class AppointmentService extends CrudService {
 
@@ -17,22 +16,6 @@ export class AppointmentService extends CrudService {
     this.employeeService = employeeService;
     this.servicesService = servicesService;
     this.elementService = new AppointmentDetailsService();
-  }
-
-  async calculatePrice(appointmentId) {
-    return await this.elementService.Model.aggregate([
-      {
-        $match: {
-          appointmentId: new mongoose.Types.ObjectId(appointmentId)
-        }
-      },
-      {
-        $group: {
-          _id: "$appointmentId",
-          price: {$sum: '$service.price'}
-        }
-      }
-    ]);
   }
 
   /**
@@ -110,7 +93,7 @@ export class AppointmentService extends CrudService {
 
   /**
    * Finds one appointment based on filter.
-   * If we found one, it will be returned with all its elements
+   * If we find one, it will be returned with all its elements
    * @param search
    * @returns {Promise<*>}
    */
@@ -144,14 +127,46 @@ export class AppointmentService extends CrudService {
       }
       rest.date = !date ? new Date() : date;
       rest.status = 0;
+      const details = await this.buildDetails(rest, elements);
+      // set calculated fiels,
+      // price = sum of service prices
+      // duration = sum of service durations
+      rest.estimatedPrice = details.reduce((prev, curr) => prev + curr.service.price, 0);
+      rest.estimatedDuration = details.reduce((prev, curr) => prev + curr.service.duration, 0);
+
+      // persist data
       appointment = await super.create(rest);
-      appointment.elements = await this.createElements(appointment, elements);
+      appointment.elements = details;
+      await this.createElements(appointment);
       return appointment;
     }
     catch (e) {
       if (appointment) {
         this.remove(appointment._id);
       }
+      throw e;
+    }
+  }
+
+  /**
+   * Creates the list of element of the appointment.
+   * Saves it into the database;
+   * @param appointment
+   */
+  async createElements(appointment) {
+    const createdElements = [];
+    try {
+      for (let element of appointment.elements) {
+        element.appointmentId = appointment._id;
+        const result = await this.elementService.create(element);
+        createdElements.push(result);
+      }
+      appointment.elements = createdElements;
+    }
+    catch (e) {
+      AppointmentDetailsModel.deleteMany({
+        _id: {$in: createdElements.map(element => element._id)}
+      })
       throw e;
     }
   }
@@ -166,34 +181,25 @@ export class AppointmentService extends CrudService {
   }
 
   /**
-   * Create each element of the appointment
+   * From (serviceId, and employeeId, and appointment information), It will set
+   * all the necessary field for the AppointmentDetails model
    * @param appointment
    * @param elements
    * @returns {Promise<*[]>}
    */
-  async createElements(appointment, elements) {
-    const createdList = [];
-    try {
-      let startDate = appointment.appointmentDate;
-      for (let element of elements) {
-        // create element;
-        await this.setElementField(element);
-        element.startDate = startDate;
-        element.appointmentId = appointment._id;
-        element.client = appointment.client;
-        createdList.push(await this.elementService.create(element));
-
-        // update start Date for next in appointment elements
-        startDate = new Date(startDate.getTime() + element.service.duration * 60000);
-      }
-      return createdList;
+  async buildDetails(appointment, elements) {
+    const appointmentDetails = [];
+    let startDate = new Date(appointment.appointmentDate);
+    for (let element of elements) {
+      // create element;
+      await this.setElementField(element);
+      element.startDate = startDate;
+      element.client = appointment.client;
+      // update start Date for next in appointment elements
+      startDate = new Date(startDate.getTime() + element.service.duration * 60000);
+      appointmentDetails.push(element);
     }
-    catch (e) {
-      AppointmentDetailsModel.deleteMany({
-        _id: {$in: createdList.map(element => element._id)}
-      })
-      throw e;
-    }
+    return appointmentDetails;
   }
 
 
