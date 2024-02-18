@@ -22,6 +22,7 @@ import {
 import {crudOffer} from "#routes/offer.route.js";
 import {paymentRoute} from "#routes/payment.route.js";
 import {recapRoute} from "#routes/recap.route.js";
+import {expenseRoute} from "#routes/expense.route.js";
 
 // dot env support
 dotenv.config();
@@ -62,6 +63,7 @@ app.use("/employee/appointments", authenticateToken([UserType.EMPLOYEE]));
 app.use("/appointment-common", authenticateToken([UserType.CLIENT, UserType.MANAGER]));
 app.use("/payment", authenticateToken([UserType.CLIENT, UserType.MANAGER]));
 app.use("/recap", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
+app.use("/expenses", authenticateToken([UserType.MANAGER]));
 
 
 // register routes
@@ -78,6 +80,7 @@ app.use("/employee/appointments", appointmentEmployeeRoute)
 app.use("/appointment-common", appointmentCommonRoute);
 app.use("/payment", paymentRoute);
 app.use("/recap", recapRoute);
+app.use("/expenses", expenseRoute);
 
 // handle throws or next(err) by async calls
 app.use(errorHandler);
