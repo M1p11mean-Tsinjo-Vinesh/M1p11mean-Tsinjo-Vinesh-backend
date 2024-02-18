@@ -20,27 +20,6 @@ export class AppointmentService extends CrudService {
   }
 
   /**
-   * Calculates the price of an appointment
-   * @param appointmentId
-   * @returns {Promise<Aggregate<Array<any>>>}
-   */
-  async calculatePrice(appointmentId) {
-    return await this.elementService.Model.aggregate([
-      {
-        $match: {
-          appointmentId: new mongoose.Types.ObjectId(appointmentId)
-        }
-      },
-      {
-        $group: {
-          _id: "$appointmentId",
-          price: {$sum: '$service.price'}
-        }
-      }
-    ]);
-  }
-
-  /**
    * Updates the status of the appointent and its details.
    * If the appointment was already canceled, the update won't work.
    * If the appointment is validated, status can no longer be reduced.

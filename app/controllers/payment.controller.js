@@ -14,27 +14,19 @@ export class PaymentController {
 
   async payAppointment(req, res, next){
     try {
-      await this.checkUser(req);
-      const result = await this.paymentService.payAppointment(req.params.id, req.body.phoneNumber);
+      const appointment = await this.paymentService.findAppointment(req.params.id);
+      if(req.user.role !== "MANAGER") {
+        // if the client did not schedule that appointment.
+        if(appointment.client._id.toString() !== req.user._id) {
+          throw BadRequest("Paiement invalide");
+        }
+      }
+      const result = await this.paymentService.payAppointment(appointment, req.body.phoneNumber);
       success(res, result);
     }
     catch (e) {
       next(e)
     }
-  }
-
-  /**
-   * The manager can pay any appointment if he wishes to.
-   * (To allow clients to pay with cash);
-   * Although, clients can only pay for theirs
-   * @param req
-   */
-  async checkUser({user, params}) {
-    if (user.role === "MANAGER") return;
-    if(await this.paymentService.verifyClient(user._id, params.id)) {
-      return;
-    }
-    throw BadRequest("Opération invalide");
   }
 
 
