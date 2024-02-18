@@ -19,6 +19,11 @@ export class AppointmentService extends CrudService {
     this.elementService = new AppointmentDetailsService();
   }
 
+  /**
+   * Calculates the price of an appointment
+   * @param appointmentId
+   * @returns {Promise<Aggregate<Array<any>>>}
+   */
   async calculatePrice(appointmentId) {
     return await this.elementService.Model.aggregate([
       {
