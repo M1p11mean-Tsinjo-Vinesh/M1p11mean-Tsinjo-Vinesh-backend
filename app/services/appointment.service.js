@@ -4,7 +4,6 @@ import {mailContentBuilder} from "#services/mail-content-builder.js";
 import {mailer} from "#core/services/mailer.js";
 import {BadRequest} from "#core/util.js";
 import {AppointmentDetailsService} from "#services/appointment-details.service.js";
-import mongoose from "mongoose";
 
 export class AppointmentService extends CrudService {
 
