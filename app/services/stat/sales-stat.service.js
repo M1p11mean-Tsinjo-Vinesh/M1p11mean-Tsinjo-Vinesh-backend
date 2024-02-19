@@ -38,11 +38,7 @@ export class SalesStatService {
   async getSalesPerYear({year}) {
     const {day, ...monthYear} = PipelineBuilder.buildGroupByDayFilter("appointmentDate")
     let pipelines = new PipelineBuilder()
-      .filter({
-        status: {
-          $gte: 10
-        }
-      })
+      .filterByValidated()
       .filterByPeriod("appointmentDate", year)
       .group({
         _id: {
@@ -70,11 +66,7 @@ export class SalesStatService {
     month = new Date().getMonth() + 1
   }) {
     let pipelines = new PipelineBuilder()
-      .filter({
-        status: {
-          $gte: 10
-        }
-      })
+      .filterByValidated()
       .filterByPeriod("appointmentDate", year, month)
       .group({
         _id: {

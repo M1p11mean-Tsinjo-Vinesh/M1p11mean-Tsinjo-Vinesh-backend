@@ -17,11 +17,7 @@ export class AppointmentDetailsService extends CrudService {
   async getGrossProfitsByYear({year}) {
     const {day, ...monthYear} = PipelineBuilder.buildGroupByDayFilter("startDate");
     let pipelines = new PipelineBuilder()
-      .filter({
-        status: {
-          $gt: 10
-        }
-      })
+      .filterByValidated()
       .filterByPeriod("startDate", year)
       .group({
         _id: {

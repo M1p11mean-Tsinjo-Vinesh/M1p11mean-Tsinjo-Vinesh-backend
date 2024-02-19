@@ -8,6 +8,14 @@ export class PipelineBuilder {
     this.#pipelines = pipelines;
   }
 
+  filterByValidated() {
+    return this.filter({
+      status: {
+        $gte: 10
+      }
+    })
+  }
+
   filter(args) {
     this.#pipelines.push({
       $match: {
