@@ -43,7 +43,10 @@ export class StatService {
     });
     // fill empty date with 0 as count
     this.merge(finalResult, PipelineBuilder.getListOfDatesFrom(year, month));
-    return finalResult;
+    return {
+      result: finalResult,
+      total: Object.keys(finalResult).reduce((prev, curr) => prev + finalResult[curr], 0)
+    };
   }
 
   /**
