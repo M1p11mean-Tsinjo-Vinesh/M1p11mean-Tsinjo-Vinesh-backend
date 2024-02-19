@@ -33,7 +33,30 @@ export class StatService {
       })
       .get();
 
-    return await AppointmentModel.aggregate(pipelines);
+    let result = await AppointmentModel.aggregate(pipelines);
+    // format result to {[date]: appointmentCount}
+    const finalResult = {};
+    result = result.forEach(one => {
+      const {appointmentCount} = one;
+      const {year, month, day} = one.day;
+      finalResult[`${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`] = appointmentCount;
+    });
+    // fill empty date with 0 as count
+    this.merge(finalResult, PipelineBuilder.getListOfDatesFrom(year, month));
+    return finalResult;
+  }
+
+  /**
+   * fill empty dates to 0
+   * @param result
+   * @param allDates
+   */
+  merge(result, allDates) {
+    allDates.forEach(date => {
+      if(!result[date]) {
+        result[date] = 0;
+      }
+    });
   }
 
   /**
