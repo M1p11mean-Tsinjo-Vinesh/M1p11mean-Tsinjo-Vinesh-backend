@@ -1,7 +1,16 @@
 import {PipelineBuilder} from "#core/pipeline.builder.js";
 import {AppointmentModel} from "#models/appointment.model.js";
+import {ExpenseService} from "#services/expense.service.js";
 
 export class SalesStatService {
+
+  expenseService = new ExpenseService();
+
+  async getProfits({
+    year = new Date().getFullYear()
+  }) {
+    return await this.expenseService.getExpenseByYear({year});
+  }
 
   /**
    * Get total sales per month per year
