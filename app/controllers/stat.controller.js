@@ -30,6 +30,7 @@ export class StatController {
       .register("get", "/appointment-count", this.exposeResult(this.service.getAppointmentCountPerPeriod))
       .register("get", "/appointment-count-per-month", this.exposeResult(this.service.getAppointmentCountPerYear))
       .register("get", "/sales", this.exposeResult(this.service.getSalesPerDay))
+      .register("get", "/sales-per-month", this.exposeResult(this.service.getSalesPerYear))
   }
 
 }
