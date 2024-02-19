@@ -1,5 +1,5 @@
 import {AppointmentDetailsModel} from "#models/appointment.model.js";
-import mongoose from "mongoose";
+import {PipelineBuilder} from "#services/pipeline.builder.js";
 
 export class StatService {
 
@@ -15,75 +15,42 @@ export class StatService {
     year = new Date().getFullYear(),
     month
   }) {
-    let pipelines = []
-    this.filterByEmployee(pipelines, employeeId);
-    this.filterByPeriod(pipelines, parseInt(year), month);
-    this.calculateWorkingTimePerDay(pipelines);
-    this.calculateMean(pipelines);
-    this.renameFields(pipelines);
-    return await AppointmentDetailsModel.aggregate(pipelines);
-  }
+    let pipelines = new PipelineBuilder()
+      // filter by employee
+      .filterByKeyId(employeeId, "employee._id")
 
-  filterByPeriod(pipelines, year, month) {
-    let currYear = year, nextYear = year;
-    let currMonth = parseInt(month ?? "1"), nextMonth = currMonth + 1;
-    if(!month || month === 12) {
-      nextYear++;
-      nextMonth = 1;
-    }
-    pipelines.push({
-      $match: {
-        startDate: {
-          $gte: new Date(`${currYear}-${String(currMonth).padStart(2, '0')}-01T00:00:00+03:00`),
-          $lt: new Date(`${nextYear}-${String(nextMonth).padStart(2, '0')}-01T00:00:00+03:00`)
-        }
-      }
-    })
-  }
+      // filter by startDate based on year and month input
+      .filterByPeriod("startDate", year, month)
 
-  renameFields(pipelines) {
-    pipelines.push({
-      $project: {
+      // group by employee and period to get the sum of the duration
+      // per day and per employee
+      .group({
+        _id: {
+          employee: '$employee',
+          // build group-by-day clause
+          ...PipelineBuilder.buildGroupByDayFilter("startDate")
+        },
+        durationPerDay: { $sum: '$service.duration' },
+      })
+
+      // group by employee
+      // and get average of the duration per day
+      .group({
+        _id: "$_id.employee",
+        meanWorkingTime: { $avg: '$durationPerDay' },
+        sumWorkDay: { $sum: 1 },
+      })
+
+      // do projection
+      // rename _id to employee
+      .project({
         _id: 0,
         employee: "$_id",
         meanWorkingTime: 1,
         sumWorkDay: 1
-      }
-    })
-  }
-
-  calculateMean(pipelines) {
-    pipelines.push({
-      $group: {
-        _id: "$_id.employee",
-        meanWorkingTime: { $avg: '$durationPerDay' },
-        sumWorkDay: { $sum: 1 },
-      },
-    });
-  }
-
-  calculateWorkingTimePerDay(pipelines) {
-    pipelines.push({
-      $group: {
-        _id: {
-          employee: '$employee',
-          year: { $year: '$startDate' },
-          month: { $month: '$startDate' },
-          day: { $dayOfMonth: '$startDate' },
-        },
-        durationPerDay: { $sum: '$service.duration' },
-      }
-    })
-  }
-
-  filterByEmployee(pipelines, employeeId) {
-    if(employeeId) {
-      pipelines.push({
-        $match: {
-          "employee._id": new mongoose.Types.ObjectId(employeeId)
-        }
       })
-    }
+      .get();
+    return await AppointmentDetailsModel.aggregate(pipelines);
   }
 
 }
