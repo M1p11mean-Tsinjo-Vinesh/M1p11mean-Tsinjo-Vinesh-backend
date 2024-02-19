@@ -1,15 +1,20 @@
 import {PipelineBuilder} from "#core/pipeline.builder.js";
 import {AppointmentModel} from "#models/appointment.model.js";
 import {ExpenseService} from "#services/expense.service.js";
+import {AppointmentDetailsService} from "#services/appointment-details.service.js";
 
 export class SalesStatService {
 
   expenseService = new ExpenseService();
+  appointmentDetailsService = new AppointmentDetailsService();
 
   async getProfits({
     year = new Date().getFullYear()
   }) {
-    return await this.expenseService.getExpenseByYear({year});
+    return await Promise.all([
+      this.expenseService.getExpenseByYear({year}),
+      this.appointmentDetailsService.getGrossProfitsByYear({year})
+    ])
   }
 
   /**
