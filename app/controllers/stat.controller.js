@@ -1,4 +1,4 @@
-import {StatService} from "#services/stat.service.js";
+import {StatService} from "#services/stat/stat.service.js";
 import {RouteBuilder} from "#core/routeBuilder.js";
 import {success} from "#core/util.js";
 
