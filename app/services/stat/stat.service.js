@@ -1,5 +1,5 @@
 import {AppointmentDetailsModel, AppointmentModel} from "#models/appointment.model.js";
-import {PipelineBuilder} from "#services/pipeline.builder.js";
+import {PipelineBuilder} from "#core/pipeline.builder.js";
 
 export class StatService {
 
