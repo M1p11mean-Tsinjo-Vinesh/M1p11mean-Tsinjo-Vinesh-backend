@@ -4,6 +4,44 @@ import {PipelineBuilder} from "#services/pipeline.builder.js";
 export class StatService {
 
   /**
+   * Gets appointment count per year grouped by months
+   * @param year
+   */
+  async getAppointmentCountPerYear({
+    year
+  }) {
+    const {day, ...monthYear} = PipelineBuilder.buildGroupByDayFilter("appointmentDate");
+    let pipelines = new PipelineBuilder()
+      .filterByPeriod("appointmentDate", year)
+      .group({
+        _id: {
+          ...monthYear
+        },
+        appointmentCount: {$sum: 1}
+      })
+      .project({
+        _id: 0,
+        month: "$_id",
+        appointmentCount: 1
+      })
+      .get();
+
+    // return array of size 12
+    // january value on index 0
+    const result = await AppointmentModel.aggregate(pipelines);
+    const finalResult = [];
+    result.forEach(({appointmentCount, month}) => {
+      finalResult[month.month - 1] = appointmentCount;
+    })
+    if (finalResult.length < 11) finalResult[11] = 0;
+    // check null & undefined
+    for (let i = 0; i < 12; i++) {
+      finalResult[i] = finalResult[i] ? finalResult[i] : 0;
+    }
+    return finalResult;
+  }
+
+  /**
    * Get appointment account per day per period
    * @param year
    * @param month

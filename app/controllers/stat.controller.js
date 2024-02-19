@@ -28,6 +28,7 @@ export class StatController {
     return new RouteBuilder()
       .register("get", "/mean-working-time", this.exposeResult(this.service.getMeanWorkingTime))
       .register("get", "/appointment-count", this.exposeResult(this.service.getAppointmentCountPerPeriod))
+      .register("get", "/appointment-count-per-month", this.exposeResult(this.service.getAppointmentCountPerYear))
   }
 
 
