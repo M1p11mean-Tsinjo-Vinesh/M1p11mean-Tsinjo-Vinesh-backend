@@ -1,7 +1,8 @@
 import {AppointmentDetailsModel, AppointmentModel} from "#models/appointment.model.js";
 import {PipelineBuilder} from "#core/pipeline.builder.js";
+import {SalesStatService} from "#services/stat/sales-stat.service.js";
 
-export class StatService {
+export class StatService extends SalesStatService {
 
   /**
    * Gets appointment count per year grouped by months
