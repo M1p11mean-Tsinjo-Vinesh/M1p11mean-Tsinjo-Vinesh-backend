@@ -9,6 +9,11 @@ export class AppointmentDetailsService extends CrudService {
     super(AppointmentDetailsModel);
   }
 
+  /**
+   * calculates gross profit by year
+   * @param year
+   * @returns {Promise<*[]>}
+   */
   async getGrossProfitsByYear({year}) {
     const {day, ...monthYear} = PipelineBuilder.buildGroupByDayFilter("startDate");
     let pipelines = new PipelineBuilder()

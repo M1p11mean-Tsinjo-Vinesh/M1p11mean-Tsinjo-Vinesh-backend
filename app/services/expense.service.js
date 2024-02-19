@@ -8,6 +8,11 @@ export class ExpenseService extends CrudService {
     super(ExpenseModel);
   }
 
+  /**
+   * Calculates expenses by year
+   * @param year
+   * @returns {Promise<*[]>}
+   */
   async getExpenseByYear({
     year = new Date().getFullYear()
   }) {

@@ -8,13 +8,26 @@ export class SalesStatService {
   expenseService = new ExpenseService();
   appointmentDetailsService = new AppointmentDetailsService();
 
+  /**
+   * Calculates net profit by year
+   * @param year
+   * @returns {Promise<{result: *[], total: *}>}
+   */
   async getProfits({
     year = new Date().getFullYear()
   }) {
-    return await Promise.all([
+    const [expenses, grossProfits] = await Promise.all([
       this.expenseService.getExpenseByYear({year}),
       this.appointmentDetailsService.getGrossProfitsByYear({year})
     ])
+    const finalResult = [];
+    for (let i = 0; i < expenses.length; i++) {
+      finalResult[i] = (grossProfits[i] ?? 0) -(expenses[i] ?? 0)
+    }
+    return {
+      result: finalResult,
+      total: finalResult.reduce((prev, curr) => curr + prev)
+    };
   }
 
   /**
