@@ -7,20 +7,26 @@ const schema = new mongoose.Schema({
   },
   lastName: {
     type: String,
-    default: ''
+    default: "",
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   phone: {
     type: String,
   },
+  favoriteEmployees: {
+    type: [mongoose.Schema.Types.ObjectId],
+  },
+  favoriteServices: {
+    type: [mongoose.Schema.Types.ObjectId],
+  },
 });
 
-export const ClientModel = new mongoose.model('Client', schema);
+export const ClientModel = new mongoose.model("Client", schema);

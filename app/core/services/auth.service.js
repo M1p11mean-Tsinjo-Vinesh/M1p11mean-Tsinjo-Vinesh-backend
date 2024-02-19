@@ -43,6 +43,10 @@ export class AuthService {
             ? this.roleMapping[user.employeeType]
             : this.roleMapping[this.Modal],
           shifts: user.shifts ? user.shifts : [],
+          favoriteEmployees: user.favoriteEmployees
+            ? user.favoriteEmployees
+            : [],
+          favoriteServices: user.favoriteServices ? user.favoriteServices : [],
         },
         process.env.TOKEN_SECRET,
         {
@@ -97,7 +101,10 @@ export class AuthService {
     const { confirmPassword, ...rest } = data;
 
     // Check if the provided password and confirmPassword match
-    if (rest.password?.localeCompare(confirmPassword) !== 0) {
+    if (
+      rest.password !== undefined &&
+      rest.password?.localeCompare(confirmPassword) !== 0
+    ) {
       throw BadRequest("Les mots de passe ne correspondent pas.");
     }
 
@@ -108,12 +115,16 @@ export class AuthService {
     }
 
     // Check if the hashed currentPassword matches the existing hashed password
-    if (old.password.localeCompare(hash(data.currentPassword)) !== 0) {
+    if (
+      data.currentPassword !== undefined &&
+      old.password.localeCompare(hash(data.currentPassword)) !== 0
+    ) {
       throw BadRequest("Mot de passe actuel erroné!");
     }
-
+    if (confirmPassword !== undefined) {
+      rest.password = hash(confirmPassword);
+    }
     // Hash the confirmPassword and update the rest of the data
-    rest.password = hash(confirmPassword);
 
     // Call the update method from the parent class (CrudService)
     const updatedUser = await this.Modal.findByIdAndUpdate(id, rest, {
