@@ -1,7 +1,33 @@
-import {AppointmentDetailsModel} from "#models/appointment.model.js";
+import {AppointmentDetailsModel, AppointmentModel} from "#models/appointment.model.js";
 import {PipelineBuilder} from "#services/pipeline.builder.js";
 
 export class StatService {
+
+  /**
+   * Get appointment account per day per period
+   * @param year
+   * @param month
+   * @returns {Promise<void>}
+   */
+  async getAppointmentCountPerPeriod({
+    year = new Date().getFullYear(),
+    month = new Date().getMonth() + 1
+  }){
+    let pipelines = new PipelineBuilder()
+      // filter by period
+      .filterByPeriod("appointmentDate", year, month)
+
+      // group per day and get appointmentCount
+      .group({
+        _id: {
+          ...PipelineBuilder.buildGroupByDayFilter("appointmentDate")
+        },
+        appointmentCount: {$sum: 1}
+      })
+      .get();
+
+    return await AppointmentModel.aggregate(pipelines);
+  }
 
   /**
    * Calculates the mean working time
