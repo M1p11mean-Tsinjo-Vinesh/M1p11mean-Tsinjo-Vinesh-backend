@@ -24,6 +24,13 @@ export class StatService {
         },
         appointmentCount: {$sum: 1}
       })
+
+      // rename _id into day
+      .project({
+        _id: 0,
+        day: "$_id",
+        appointmentCount: 1
+      })
       .get();
 
     return await AppointmentModel.aggregate(pipelines);

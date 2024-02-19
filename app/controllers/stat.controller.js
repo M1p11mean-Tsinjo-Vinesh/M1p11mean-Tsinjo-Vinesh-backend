@@ -12,19 +12,22 @@ export class StatController {
     this.route = this.buildRouter().build();
   }
 
-  async getMeanWorkingTime(req, res, next) {
-    try {
-      const result = await this.service.getMeanWorkingTime(req.query);
-      success(res, result);
-    }
-    catch (e) {
-      next(e);
+  exposeResult(serviceFn){
+    return async (req, res, next) => {
+      try {
+        const result = await serviceFn.call(this.service, req.query);
+        success(res, result);
+      }
+      catch (e) {
+        next(e);
+      }
     }
   }
 
   buildRouter() {
     return new RouteBuilder()
-      .register("get", "/mean-working-time", this.getMeanWorkingTime.bind(this));
+      .register("get", "/mean-working-time", this.exposeResult(this.service.getMeanWorkingTime))
+      .register("get", "/appointment-count", this.exposeResult(this.service.getAppointmentCountPerPeriod))
   }
 
 
