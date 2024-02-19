@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
+  timeKey: {
+    type: String,
+    required: true
+  },
   year: {
     type: Number,
     required: true
