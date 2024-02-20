@@ -8,6 +8,23 @@ export class PipelineBuilder {
     this.#pipelines = pipelines;
   }
 
+  filterByValidated() {
+    return this.filter({
+      status: {
+        $gte: 10
+      }
+    })
+  }
+
+  filter(args) {
+    this.#pipelines.push({
+      $match: {
+        ...args
+      }
+    });
+    return this;
+  }
+
   /**
    * if an attribute of model is an ObjectId, then you should use this function to filter
    * @param idValue

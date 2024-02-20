@@ -1,7 +1,8 @@
 import {AppointmentDetailsModel, AppointmentModel} from "#models/appointment.model.js";
-import {PipelineBuilder} from "#services/pipeline.builder.js";
+import {PipelineBuilder} from "#core/pipeline.builder.js";
+import {SalesStatService} from "#services/stat/sales-stat.service.js";
 
-export class StatService {
+export class StatService extends SalesStatService {
 
   /**
    * Gets appointment count per year grouped by months
@@ -12,6 +13,7 @@ export class StatService {
   }) {
     const {day, ...monthYear} = PipelineBuilder.buildGroupByDayFilter("appointmentDate");
     let pipelines = new PipelineBuilder()
+      .filterByValidated()
       .filterByPeriod("appointmentDate", year)
       .group({
         _id: {
@@ -52,6 +54,7 @@ export class StatService {
     month = new Date().getMonth() + 1
   }){
     let pipelines = new PipelineBuilder()
+      .filterByValidated()
       // filter by period
       .filterByPeriod("appointmentDate", year, month)
 
@@ -113,6 +116,7 @@ export class StatService {
     month
   }) {
     let pipelines = new PipelineBuilder()
+      .filterByValidated()
       // filter by employee
       .filterByKeyId(employeeId, "employee._id")
 

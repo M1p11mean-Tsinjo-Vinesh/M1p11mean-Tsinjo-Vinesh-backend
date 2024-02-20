@@ -1,4 +1,4 @@
-import {StatService} from "#services/stat.service.js";
+import {StatService} from "#services/stat/stat.service.js";
 import {RouteBuilder} from "#core/routeBuilder.js";
 import {success} from "#core/util.js";
 
@@ -29,7 +29,10 @@ export class StatController {
       .register("get", "/mean-working-time", this.exposeResult(this.service.getMeanWorkingTime))
       .register("get", "/appointment-count", this.exposeResult(this.service.getAppointmentCountPerPeriod))
       .register("get", "/appointment-count-per-month", this.exposeResult(this.service.getAppointmentCountPerYear))
-  }
+      .register("get", "/sales", this.exposeResult(this.service.getSalesPerDay))
+      .register("get", "/sales-per-month", this.exposeResult(this.service.getSalesPerYear))
+      .register("get", "/profits", this.exposeResult(this.service.getProfits))
 
+  }
 
 }
