@@ -108,7 +108,7 @@ export class AppointmentDetailsService extends CrudService {
         const [hourMax, minuteMax] = this.timeStringToArray(shift.endTime);
         const milliseconds = startDate.getTime();
 
-        // start of the employee's shit
+        // start of the employee's shift
         const min = new Date(milliseconds).setHours(hourMin, minuteMin, 0, 0);
 
         // end of the employee's shift
