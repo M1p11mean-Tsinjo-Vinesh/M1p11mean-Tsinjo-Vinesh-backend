@@ -37,16 +37,16 @@ export class NotificationEmailSender extends NotificationSender {
       recipients: [email],
       subject: `[Notification-M1-Tsinjo-Vinesh] ${title}`,
       content: `
-        Bonjour,
+        Bonjour,<br><br>
       
         Ceci est un mail de notification, <br> 
         Description : ${description}, <br>
-        Pour en savoir plus, veuillez cliquer <a href="${redirectUrl}">ici</a>
+        Pour en savoir plus, veuillez cliquer <a href="${redirectUrl}">ici</a><br>
         
-        Merci de votre confiance, <br>
+        Merci de votre confiance, <br><br>
         
-        Nos remerciements,
-        Beauty salon, M1 Tsinjo Vinesh
+        Nos remerciements, <br>
+        Beauty salon, M1 Tsinjo Vinesh 
       `
     });
     if(this.notificationSender) this.notificationSender.send(data);

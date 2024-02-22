@@ -1,6 +1,5 @@
 import {RouteBuilder} from "#core/routeBuilder.js";
-import {AppointmentService} from "#services/appointment.service.js";
-import {respond, success} from "#core/util.js";
+import {success} from "#core/util.js";
 
 export class AppointmentController {
 

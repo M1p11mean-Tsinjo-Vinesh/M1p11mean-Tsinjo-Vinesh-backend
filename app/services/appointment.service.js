@@ -3,6 +3,9 @@ import {AppointmentModel} from "#models/appointment.model.js";
 import {mailContentBuilder} from "#services/mail-content-builder.js";
 import {mailer} from "#core/services/mailer.js";
 import {BadRequest} from "#core/util.js";
+import {EmployeeModel} from "#models/employee.model.js";
+import {notificationSender} from "#services/notification/notification-final.sender.js";
+import {getAdminAppointmentUrl, VALIDATION_ICON} from "../static.vars.js";
 
 export class AppointmentService extends CrudService {
 
@@ -133,6 +136,7 @@ export class AppointmentService extends CrudService {
       appointment = await super.create(rest);
       appointment.elements = details;
       await this.elementService.createElements(appointment);
+      this.sendNotificationToManager(appointment);
       return appointment;
     }
     catch (e) {
@@ -141,6 +145,24 @@ export class AppointmentService extends CrudService {
       }
       throw e;
     }
+  }
+
+  async sendNotificationToManager(appointment) {
+    let managers = await EmployeeModel.find({
+      employeeType: "MANAGER"
+    }, 'email ');
+    managers = managers.map(manager => manager._doc);
+    managers.forEach(manager => {
+      notificationSender.send({
+        user: manager,
+        title: "Demande de validation RDV",
+        description: `
+          L'utilisateur ${appointment.client.name} a demandé un rendez vous qui nécessite votre validation
+        `,
+        redirectUrl: getAdminAppointmentUrl(appointment),
+        pictureUrl: VALIDATION_ICON
+      });
+    })
   }
 
   /**
