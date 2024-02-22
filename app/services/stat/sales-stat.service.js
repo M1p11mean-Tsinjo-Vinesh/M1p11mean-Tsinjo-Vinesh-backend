@@ -1,12 +1,15 @@
 import {PipelineBuilder} from "#core/pipeline.builder.js";
 import {AppointmentModel} from "#models/appointment.model.js";
-import {ExpenseService} from "#services/expense.service.js";
-import {AppointmentDetailsService} from "#services/appointment-details.service.js";
 
 export class SalesStatService {
 
-  expenseService = new ExpenseService();
-  appointmentDetailsService = new AppointmentDetailsService();
+  expenseService;
+  appointmentDetailsService;
+
+  constructor(expenseService, appointmentDetailsService) {
+    this.expenseService = expenseService;
+    this.appointmentDetailsService = appointmentDetailsService;
+  }
 
   /**
    * Calculates net profit by year

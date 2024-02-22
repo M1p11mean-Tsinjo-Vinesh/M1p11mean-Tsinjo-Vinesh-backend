@@ -7,8 +7,8 @@ export class StatController {
   route;
   service;
 
-  constructor() {
-    this.service = new StatService();
+  constructor(expenseService, appointmentDetailsService) {
+    this.service = new StatService(expenseService, appointmentDetailsService);
     this.route = this.buildRouter().build();
   }
 

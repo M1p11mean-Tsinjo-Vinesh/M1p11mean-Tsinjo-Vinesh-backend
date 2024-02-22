@@ -1,8 +1,10 @@
 import {ExpenseService} from "#services/expense.service.js";
 import {CrudController} from "#core/controllers/crud-controller.js";
 
+export const expenseService = new ExpenseService();
+
 const expenseController = new CrudController(
-  new ExpenseService(),
+  expenseService,
   ["year", "month", "type"]
 );
 

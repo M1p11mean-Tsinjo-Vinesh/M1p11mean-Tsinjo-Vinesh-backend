@@ -5,9 +5,11 @@ import {AppointmentManagerController} from "#controllers/appointment-manager.con
 import {AppointmentEmployeeController} from "#controllers/appointment-employee.controller.js";
 import {AppointmentController} from "#controllers/appointment.controller.js";
 import {AppointmentService} from "#services/appointment.service.js";
+import {AppointmentDetailsService} from "#services/appointment-details.service.js";
 
 
-export const appointmentService = new AppointmentService(employeeService, servicesService)
+export const appointmentDetailsService = new AppointmentDetailsService(employeeService, servicesService);
+export const appointmentService = new AppointmentService(appointmentDetailsService);
 
 const appointmentClientController = new AppointmentClientController(appointmentService);
 export const appointmentClientRoute = appointmentClientController.route;
@@ -17,7 +19,7 @@ const appointmentManagerController = new AppointmentManagerController(appointmen
 export const appointmentManagerRoute = appointmentManagerController.route;
 
 
-const appointmentEmployeeController = new AppointmentEmployeeController();
+const appointmentEmployeeController = new AppointmentEmployeeController(appointmentDetailsService);
 export const appointmentEmployeeRoute = appointmentEmployeeController.route;
 
 const appointmentControllerCommon = new AppointmentController(appointmentService);

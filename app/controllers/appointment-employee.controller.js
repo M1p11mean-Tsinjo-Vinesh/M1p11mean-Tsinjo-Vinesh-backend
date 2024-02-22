@@ -6,8 +6,8 @@ import {respond} from "#core/util.js";
 
 export class AppointmentEmployeeController extends ReadController {
 
-  constructor() {
-    super(new AppointmentDetailsService(), ["client._id", "service._id", "startDate", "status"]);
+  constructor(appointmentDetailsService) {
+    super(appointmentDetailsService, ["client._id", "service._id", "startDate", "status"]);
   }
 
   async markAppointmentElementDone(req, res, next) {
