@@ -25,12 +25,16 @@ import {recapRoute} from "#routes/recap.route.js";
 import {expenseRoute} from "#routes/expense.route.js";
 import {preferencesRoute} from "#routes/preferences.route.js";
 import {statRoute} from "#routes/stat.route.js";
+import * as ws from "ws";
+import {handleWsConnection} from "./app/ws/index.js";
 
 // dot env support
 dotenv.config();
 
 // server initialization
 const app = express();
+const wsServer = new ws.WebSocketServer({noServer: true});
+
 const PORT = process.env.PORT || 3000;
 
 // load database
@@ -94,6 +98,14 @@ app.use("/stats", statRoute);
 app.use(errorHandler);
 
 // start listening to requests.
-app.listen(PORT, (error) => {
+const httpServer = app.listen(PORT, (error) => {
   console.log(!error ? `Server is listening on port ${PORT}` : error);
 });
+
+wsServer.on('connection', handleWsConnection);
+
+httpServer.on('upgrade', (request, socket, head) => {
+  wsServer.handleUpgrade(request, socket, head, socket => {
+    wsServer.emit('connection', socket, request);
+  });
+})

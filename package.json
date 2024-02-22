@@ -29,7 +29,8 @@
     "mongoose": "^8.1.0",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
-    "prettier": "^3.2.4"
+    "prettier": "^3.2.4",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.3"
