@@ -194,6 +194,7 @@ export class AppointmentService extends CrudService {
       // create element;
       await this.setElementField(element);
       element.startDate = startDate;
+      element.endDate = new Date(new Date(startDate).getTime() + (element.service.duration * 60000))
       element.client = appointment.client;
       // verify employee availability.
       await this.checkEmployeeAvailability(element);
@@ -260,7 +261,7 @@ export class AppointmentService extends CrudService {
    * @param timeString
    */
   timeStringToArray(timeString) {
-    return timeString.split(":").map(parseInt);
+    return timeString.split(":").map(parseInt).map(number => isNaN(number) ? 0 : number);
   }
 
 
