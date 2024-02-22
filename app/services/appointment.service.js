@@ -4,6 +4,7 @@ import {mailContentBuilder} from "#services/mail-content-builder.js";
 import {mailer} from "#core/services/mailer.js";
 import {BadRequest} from "#core/util.js";
 import {AppointmentDetailsService} from "#services/appointment-details.service.js";
+import mongoose from "mongoose";
 
 export class AppointmentService extends CrudService {
 
@@ -216,6 +217,7 @@ export class AppointmentService extends CrudService {
 
   /**
    * Verifies if the timeframe of the appointment element is not out of the employee's shift.
+   * Verifies if the employee is not booked.
    * @param appointmentElement
    * @returns {Promise<void>}
    */
@@ -225,12 +227,22 @@ export class AppointmentService extends CrudService {
     const startDate = new Date(appointmentElement.startDate);
     let isInEmployeeShift = false;
     for(let shift of employee.shifts) {
+
+      // verifies if the startDate'S day is valid
       if(shift.daysOfWeek.indexOf(startDate.getDay()) >= 0) {
+
+        // verifies if the startDate and endDate fall into the timeframe of the employee
         const [hourMin, minuteMin] = this.timeStringToArray(shift.startTime);
         const [hourMax, minuteMax] = this.timeStringToArray(shift.endTime);
         const milliseconds = startDate.getTime();
+
+        // start of the employee's shit
         const min = new Date(milliseconds).setHours(hourMin, minuteMin, 0, 0);
+
+        // end of the employee's shift
         const max = new Date(milliseconds).setHours(hourMax, minuteMax, 0, 0);
+
+        // verifies if the startDate and endDate fall into the timeframe of the employee
         if (min <= startDate && (milliseconds + duration * 60000) <= max) {
           isInEmployeeShift = true;
           break;
@@ -240,6 +252,41 @@ export class AppointmentService extends CrudService {
     if(!isInEmployeeShift) {
       throw BadRequest("Un élément de votre rendez-vous est hors du shift de l'employée car " + this.shiftToSentenceForError(employee.shifts, employee.name));
     }
+    await this.checkIfEmployeeBooked(appointmentElement);
+  }
+
+  /**
+   * Verifies if the employee is not booked on the date
+   * @param appointmentElement
+   * @returns {Promise<void>}
+   */
+  async checkIfEmployeeBooked({employee, startDate, endDate}) {
+    const result = await AppointmentDetailsModel.find({
+      "employee._id": new mongoose.Types.ObjectId(employee._id),
+      status: {
+        $gte: 0
+      },
+      $or: [
+        {
+          startDate: { $lte: startDate },
+          endDate: { $gt: startDate }
+        },
+        {
+          startDate: { $lt: endDate },
+          endDate: { $gte: endDate }
+        }
+      ]
+    })
+    if(result.length > 0) {
+      throw BadRequest(this.bookedErrorMessage(result));
+    }
+  }
+
+  bookedErrorMessage(list) {
+    return list.map(({startDate, endDate, employee}) => {
+      const {name} = employee;
+      return `${name} est reservé entre ${new Date(startDate).toLocaleString()} et ${new Date(endDate).toLocaleString()}`;
+    }).join(' et ')
   }
 
   /**
