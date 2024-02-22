@@ -63,7 +63,7 @@ app.use("/upload", authenticateToken([UserType.MANAGER]));
 app.use("/appointments", authenticateToken([UserType.CLIENT]));
 app.use("/offers", authenticateToken([UserType.MANAGER]));
 app.use("/manager/appointments", authenticateToken([UserType.MANAGER]));
-app.use("/employee/appointments", authenticateToken([UserType.EMPLOYEE]));
+app.use("/employee/appointments", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
 app.use(
   "/appointment-common",
   authenticateToken([UserType.CLIENT, UserType.MANAGER]),

@@ -206,8 +206,9 @@ export class AppointmentService extends CrudService {
   // create one of the details of the appointment
   async setElementField(appointmentElement) {
     const {employee, service} = appointmentElement;
-    appointmentElement.employee = await this.findEmployee(employee);
-    appointmentElement.service = await this.findService(service);
+    const [employeeObject, serviceObject] = await Promise.all([this.findEmployee(employee), this.findService(service)]);
+    appointmentElement.employee = employeeObject;
+    appointmentElement.service = serviceObject;
   }
 
   async findEmployee(id) {

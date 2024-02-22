@@ -9,6 +9,7 @@ import {
 const employeeAuthRouter = new AuthController(
   new EmployeeAuthService(EmployeeModel),
 ).route;
+
 const employeeService = new EmployeeService();
 const crudEmployee = new CrudController(employeeService).route;
 

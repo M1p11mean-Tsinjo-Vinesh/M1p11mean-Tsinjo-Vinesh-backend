@@ -12,8 +12,22 @@ export class EmployeeService extends CrudService {
 
   // 1234 default password for every user
   async create(data) {
-    // by default the employee password is 1234.
+    // by default, the employee password is 1234.
     data.password = hash("1234");
+    const workDays = [1,2,3,4,5];
+    // default shift for every employee
+    data.shifts = [
+      {
+        daysOfWeek: workDays,
+        startTime: "08:00",
+        endTime: "12:00"
+      },
+      {
+        daysOfWeek: workDays,
+        startTime: "13:00",
+        endTime: "17:00"
+      }
+    ];
     return await super.create(data);
   }
 

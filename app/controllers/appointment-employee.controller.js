@@ -22,10 +22,11 @@ export class AppointmentEmployeeController extends ReadController {
 
   createFilterOptions(req) {
     const filterOptions = super.createFilterOptions(req);
-    return {
+    if (req.user.role === "EMPLOYEE") return {
       ...filterOptions,
       "employee._id": req.user._id
     }
+    return filterOptions;
   }
 
   buildRouter() {
