@@ -26,7 +26,8 @@ import {expenseRoute} from "#routes/expense.route.js";
 import {preferencesRoute} from "#routes/preferences.route.js";
 import {statRoute} from "#routes/stat.route.js";
 import * as ws from "ws";
-import {handleWsConnection, wsManager} from "./app/ws/index.js";
+import {handleWsConnection} from "./app/ws/index.js";
+import {notificationRoute} from "#routes/notification.route.js";
 
 // dot env support
 dotenv.config();
@@ -75,6 +76,7 @@ app.use(
 app.use("/payment", authenticateToken([UserType.CLIENT, UserType.MANAGER]));
 app.use("/recap", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
 app.use("/expenses", authenticateToken([UserType.MANAGER]));
+app.use("/notifications", authenticateToken([UserType.MANAGER, UserType.EMPLOYEE, UserType.CLIENT]));
 
 // register routes
 app.use("/users", userRoute);
@@ -93,6 +95,7 @@ app.use("/recap", recapRoute);
 app.use("/expenses", expenseRoute);
 app.use("/preferences", preferencesRoute);
 app.use("/stats", statRoute);
+app.use("/notifications", notificationRoute);
 
 // handle throws or next(err) by async calls
 app.use(errorHandler);
