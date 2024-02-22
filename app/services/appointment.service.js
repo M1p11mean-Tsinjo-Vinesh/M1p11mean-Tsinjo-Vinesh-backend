@@ -195,6 +195,8 @@ export class AppointmentService extends CrudService {
       await this.setElementField(element);
       element.startDate = startDate;
       element.client = appointment.client;
+      // verify employee availability.
+      await this.checkEmployeeAvailability(element);
       // update start Date for next in appointment elements
       startDate = new Date(startDate.getTime() + element.service.duration * 60000);
       appointmentDetails.push(element);
@@ -211,12 +213,64 @@ export class AppointmentService extends CrudService {
     appointmentElement.service = serviceObject;
   }
 
+  /**
+   * Verifies if the timeframe of the appointment element is not out of the employee's shift.
+   * @param appointmentElement
+   * @returns {Promise<void>}
+   */
+  async checkEmployeeAvailability(appointmentElement) {
+    const {employee, service} = appointmentElement;
+    const {duration} = service;
+    const startDate = new Date(appointmentElement.startDate);
+    let isInEmployeeShift = false;
+    for(let shift of employee.shifts) {
+      if(shift.daysOfWeek.indexOf(startDate.getDay())) {
+        const [hourMin, minuteMin] = this.timeStringToArray(shift.startTime);
+        const [hourMax, minuteMax] = this.timeStringToArray(shift.endTime);
+        const milliseconds = startDate.getTime();
+        const min = new Date(milliseconds).setHours(hourMin, minuteMin, 0, 0);
+        const max = new Date(milliseconds).setHours(hourMin, minuteMin, 0, 0);
+        if (min <= startDate && (milliseconds + duration * 60000) <= max) {
+          isInEmployeeShift = true;
+          break;
+        }
+      }
+    }
+    if(!isInEmployeeShift) {
+      throw BadRequest("Un élément de votre rendez-vous est hors du shift de l'employée car " + this.shiftToSentenceForError(employee.shifts, employee.name));
+    }
+  }
+
+  /**
+   * From the shift this function builds the error message
+   * @param shifts
+   * @param name of the employee
+   */
+  shiftToSentenceForError(shifts, name = undefined) {
+    const days = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+      let descriptionsDesShifts = shifts.map(shift => {
+        const joursDeLaSemaine = shift.daysOfWeek.map(jour => days[jour]).join(', ');
+        return `${joursDeLaSemaine} de ${shift.startTime} à ${shift.endTime}`;
+      });
+      return `les shifts de ${name ?? "cet employé"} sont ${descriptionsDesShifts.join(' et ')}`;
+  }
+
+  /**
+   * From string "hh:mm" it returns [hh, mm]
+   * @param timeString
+   */
+  timeStringToArray(timeString) {
+    return timeString.split(":").map(parseInt);
+  }
+
+
   async findEmployee(id) {
-    const {firstName, lastName, email, _id}  = await this.employeeService.findById(id);
+    const {firstName, lastName, email, _id, shifts}  = await this.employeeService.findById(id);
     return {
       _id,
       name: `${firstName} ${lastName}`,
-      email: email
+      email: email,
+      shifts
     }
   }
 
