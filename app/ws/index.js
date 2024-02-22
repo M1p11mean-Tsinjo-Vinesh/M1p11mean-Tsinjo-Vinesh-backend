@@ -1,7 +1,27 @@
 import jwt from "jsonwebtoken";
 
 const channels = {};
-const channelTypes = ["notification"];
+const NOTIFICATION = "notification";
+const channelTypes = [NOTIFICATION];
+
+/**
+ * send data to user
+ * @param channelType
+ * @param userId
+ * @param data
+ */
+function send(channelType, userId, data) {
+  channels[channelType + userId]?.forEach(client => {
+    client.send(JSON.stringify(data));
+  })
+}
+
+export const wsManager = {
+  send,
+  sendNotification (userId, data) {
+    send(NOTIFICATION, userId, data)
+  }
+}
 
 /**
  * Handle client connection to websocket server
@@ -11,7 +31,7 @@ const channelTypes = ["notification"];
  */
 export const handleWsConnection = async (socket, req) => {
   const header = req.headers["authorization"];
-  const channelType = req.headers["action"] ?? "notification";
+  const channelType = req.headers["action"] ?? NOTIFICATION;
   const token = header && header.split(" ")[1];
 
   // only connected user is allowed
@@ -30,7 +50,6 @@ export const handleWsConnection = async (socket, req) => {
     // join channel
     joinChannel(socket);
     socket.on('close', onSocketClose(socket))
-    console.log(channels);
   }
   catch (e) {
     socket.send("403: Access denied");
@@ -63,8 +82,8 @@ function onSocketClose(socket) {
 function joinChannel(socket) {
   let channel = channels[socket.channelType + socket.user._id];
   if (!channel) {
-    channels[socket.channelType + socket.user._id] = [];
     channel = [];
+    channels[socket.channelType + socket.user._id] = channel;
   }
   // auto close connection after expiration if user did not
   socket.timeOutId = setTimeout(() => {

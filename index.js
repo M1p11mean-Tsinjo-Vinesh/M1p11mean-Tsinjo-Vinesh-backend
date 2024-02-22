@@ -26,7 +26,7 @@ import {expenseRoute} from "#routes/expense.route.js";
 import {preferencesRoute} from "#routes/preferences.route.js";
 import {statRoute} from "#routes/stat.route.js";
 import * as ws from "ws";
-import {handleWsConnection} from "./app/ws/index.js";
+import {handleWsConnection, wsManager} from "./app/ws/index.js";
 
 // dot env support
 dotenv.config();
