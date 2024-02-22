@@ -19,6 +19,18 @@ class Mailer {
     }
   }
 
+  /**
+   * Send mail
+   * rest {
+   *   recipients, // string[],
+   *   subject,
+   *   contentType = "HTML", // HTML or Plain Text of body
+   *   content, // text
+   * }
+   * @param dates
+   * @param rest
+   * @returns {Promise<Awaited<unknown>[]>}
+   */
   async send({
     dates, // list of dates to send the email
     ...rest

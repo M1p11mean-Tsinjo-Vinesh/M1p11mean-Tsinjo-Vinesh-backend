@@ -6,7 +6,6 @@ import {BadRequest} from "#core/util.js";
 
 export class AppointmentService extends CrudService {
 
-
   elementService;
 
   constructor(appointmentService) {
