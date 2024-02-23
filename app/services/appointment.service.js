@@ -6,6 +6,7 @@ import {BadRequest} from "#core/util.js";
 import {EmployeeModel} from "#models/employee.model.js";
 import {notificationSender} from "#services/notification/notification-final.sender.js";
 import {getAdminAppointmentUrl, VALIDATION_ICON} from "../static.vars.js";
+import {employeeService} from "#routes/employee.route.js";
 
 export class AppointmentService extends CrudService {
 
@@ -153,9 +154,7 @@ export class AppointmentService extends CrudService {
    * @returns {Promise<void>}
    */
   async sendNotificationToManagerOnCreation(appointment) {
-    let managers = await EmployeeModel.find({
-      employeeType: "MANAGER"
-    }, 'email ');
+    let managers = await employeeService.findManagers();
     managers = managers.map(manager => manager._doc);
     managers.forEach(manager => {
       notificationSender.send({

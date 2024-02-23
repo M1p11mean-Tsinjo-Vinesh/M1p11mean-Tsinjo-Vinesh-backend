@@ -9,6 +9,12 @@ export class EmployeeService extends CrudService {
     super(EmployeeModel, ["password"]);
   }
 
+  async findManagers(cols = "email") {
+    return await EmployeeModel.find({
+      employeeType: "MANAGER"
+    }, 'email');
+  }
+
 
   // 1234 default password for every user
   async create(data) {
