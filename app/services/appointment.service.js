@@ -136,7 +136,7 @@ export class AppointmentService extends CrudService {
       appointment = await super.create(rest);
       appointment.elements = details;
       await this.elementService.createElements(appointment);
-      this.sendNotificationToManager(appointment);
+      this.sendNotificationToManagerOnCreation(appointment);
       return appointment;
     }
     catch (e) {
@@ -147,7 +147,12 @@ export class AppointmentService extends CrudService {
     }
   }
 
-  async sendNotificationToManager(appointment) {
+  /**
+   * Sends notification to manager on validation.
+   * @param appointment
+   * @returns {Promise<void>}
+   */
+  async sendNotificationToManagerOnCreation(appointment) {
     let managers = await EmployeeModel.find({
       employeeType: "MANAGER"
     }, 'email ');
