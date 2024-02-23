@@ -4,8 +4,29 @@ import {mailContentBuilder} from "#services/mail-content-builder.js";
 import {mailer} from "#core/services/mailer.js";
 import {BadRequest} from "#core/util.js";
 import {notificationSender} from "#services/notification/notification-final.sender.js";
-import {getAdminAppointmentUrl, VALIDATION_ICON} from "../static.vars.js";
+import {
+  CANCEL_ICON,
+  getAdminAppointmentUrl,
+  getClientAppointmentUrl,
+  PAID_ICON,
+  VALIDATION_ICON
+} from "../static.vars.js";
 import {employeeService} from "#routes/employee.route.js";
+
+const statusInfos = {
+  [-10]: {
+    text: "Annulé",
+    icon: CANCEL_ICON
+  },
+  [10]: {
+    text: "Validé",
+    icon: VALIDATION_ICON
+  },
+  [20]: {
+    text: "Payé",
+    icon: PAID_ICON
+  },
+}
 
 export class AppointmentService extends CrudService {
 
@@ -32,6 +53,47 @@ export class AppointmentService extends CrudService {
     }
     await this.update(appointmentId, {status});
     await this.elementService.Model.updateMany({appointmentId}, {status});
+    appointment.status = status;
+    this.sendNotificationOnStateChange(appointment);
+  }
+
+  /**
+   * Notify client and manager on state change
+   * @param appointment
+   * @returns {Promise<void>}
+   */
+  async sendNotificationOnStateChange(appointment){
+    await Promise.all([
+      this.notifyManagerOnStateChange(appointment),
+      this.notifyClientOnStateChange(appointment)
+    ])
+  }
+
+  async notifyManagerOnStateChange (appointment, statusInfo = statusInfos[appointment.status]) {
+    const managers = await employeeService.findManagers();
+    managers.forEach(manager => {
+      notificationSender.send({
+        user: manager,
+        title: `Rendez-vous ${statusInfo.text}`,
+        description: `
+          Votre rendez-vous [${appointment._id}] à été ${statusInfo.text}
+        `,
+        redirectUrl: getClientAppointmentUrl(appointment),
+        pictureUrl: statusInfo.icon
+      })
+    })
+  }
+
+  async notifyClientOnStateChange(appointment, statusInfo = statusInfos[appointment.status]) {
+    notificationSender.send({
+      user: appointment.client,
+      title: `Rendez-vous ${statusInfo.text}`,
+      description: `
+          Le rendez vous de ${appointment.client.name} [${appointment._id}] à été ${statusInfo.text}
+        `,
+      redirectUrl: getAdminAppointmentUrl(appointment),
+      pictureUrl: statusInfo.icon
+    })
   }
 
   /**
