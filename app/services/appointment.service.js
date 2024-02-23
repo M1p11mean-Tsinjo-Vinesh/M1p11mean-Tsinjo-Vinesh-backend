@@ -3,7 +3,6 @@ import {AppointmentModel} from "#models/appointment.model.js";
 import {mailContentBuilder} from "#services/mail-content-builder.js";
 import {mailer} from "#core/services/mailer.js";
 import {BadRequest} from "#core/util.js";
-import {EmployeeModel} from "#models/employee.model.js";
 import {notificationSender} from "#services/notification/notification-final.sender.js";
 import {getAdminAppointmentUrl, VALIDATION_ICON} from "../static.vars.js";
 import {employeeService} from "#routes/employee.route.js";
