@@ -1,5 +1,6 @@
 import {ReadController} from "#core/controllers/read-controller.js";
 import {respond, success} from "#core/util.js";
+import mongoose from "mongoose";
 
 export class NotificationController extends ReadController {
 
@@ -34,7 +35,7 @@ export class NotificationController extends ReadController {
     const filterOptions = super.createFilterOptions(req);
     return {
       ...filterOptions,
-      "userId": _id
+      "userId": new mongoose.Types.ObjectId(_id)
     }
   }
 
