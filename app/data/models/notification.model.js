@@ -21,6 +21,10 @@ const schema = new mongoose.Schema({
   userId: {
     type: mongoose.Types.ObjectId,
     required: true
+  },
+  seen: {
+    type: Boolean,
+    default: false
   }
 });
 
