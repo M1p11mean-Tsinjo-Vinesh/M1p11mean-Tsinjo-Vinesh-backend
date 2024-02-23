@@ -30,7 +30,7 @@ export class PaymentService {
       paymentInfo: {phoneNumber},
       date: new Date()
     });
-    await this.appointmentService.update(appointmentId, {status: 20});
+    await this.appointmentService.updateStatus(appointmentId, 20);
     return payment;
   }
 
