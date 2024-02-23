@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import * as url from "url";
 
 const channels = {};
 const NOTIFICATION = "notification";
@@ -30,9 +31,8 @@ export const wsManager = {
  * @returns {Promise<void>}
  */
 export const handleWsConnection = async (socket, req) => {
-  const header = req.headers["authorization"];
+  const token = url.parse(req.url, true).query.token;
   const channelType = req.headers["action"] ?? NOTIFICATION;
-  const token = header && header.split(" ")[1];
 
   // only connected user is allowed
   if (!token) {
