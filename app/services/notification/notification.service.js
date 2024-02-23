@@ -28,8 +28,11 @@ export class NotificationService extends CrudService {
     throw BadRequest("Opération invalide");
   }
 
-  countNotSeen(userId) {
-
+  async countNotSeen(userId) {
+    return await this.Model.countDocuments({
+      userId: new mongoose.Types.ObjectId(userId),
+      seen: {$in: [false, undefined]}
+    })
   }
 
 }
