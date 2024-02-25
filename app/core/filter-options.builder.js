@@ -1,7 +1,5 @@
-
 // this class will be used to build filter option for a mongoose model
 export class FilterOptionsBuilder {
-
   allowedParams;
   query;
 
@@ -22,24 +20,31 @@ export class FilterOptionsBuilder {
   }
 
   build() {
-    if(!this.allowedParams) return {};
+    if (!this.allowedParams) return {};
     const filterOptions = {};
     const filterObject = this.getParamValues();
     for (const key in filterObject) {
       if (filterObject.hasOwnProperty(key)) {
-        const [operator, fieldName] = key.split(':');
+        const [operator, fieldName] = key.split(":");
         const value = filterObject[key];
         const operatorFunction = this.operatorMap[operator];
         if (!operatorFunction) continue;
-        Object.assign(filterOptions, operatorFunction(fieldName, value));
+        if (fieldName in filterOptions) {
+          Object.assign(
+            filterOptions[fieldName],
+            operatorFunction(fieldName, value)[fieldName],
+          );
+        } else {
+          Object.assign(filterOptions, operatorFunction(fieldName, value));
+        }
       }
     }
     return filterOptions;
   }
 
   getParamValues() {
-    const params = {}
-    for(let key of Object.keys(this.query)) {
+    const params = {};
+    for (let key of Object.keys(this.query)) {
       if (this.IsKeyValid(key)) {
         params[key] = this.query[key];
       }
@@ -47,12 +52,11 @@ export class FilterOptionsBuilder {
     return params;
   }
 
-
   // key should contain ":" and one of the allowed param key.
   IsKeyValid(key) {
-    if(!key.includes(":")) return false;
-    for(let allowed of this.allowedParams) {
-      if(key.includes(allowed)) return true;
+    if (!key.includes(":")) return false;
+    for (let allowed of this.allowedParams) {
+      if (key.includes(allowed)) return true;
     }
     return false;
   }
@@ -64,5 +68,4 @@ export class FilterOptionsBuilder {
     this.allowedParams = allowedParams;
     return this;
   }
-
 }
