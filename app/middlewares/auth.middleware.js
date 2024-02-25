@@ -1,7 +1,12 @@
 import jwt from "jsonwebtoken";
 
-export function authenticateToken(allowedRoles) {
+export function authenticateToken(allowedRoles, except = []) {
   return (req, res, next) => {
+    if(except.indexOf(req.method) >= 0) {
+      next();
+      return;
+    }
+
     const header = req.headers["authorization"];
     const token = header && header.split(" ")[1];
 
