@@ -62,7 +62,7 @@ app.use(
   "/employees-auth/update-info",
   authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]),
 );
-app.use("/employees", authenticateToken([UserType.MANAGER]));
+app.use("/employees", authenticateToken([UserType.MANAGER], ["GET"]));
 app.use("/services", authenticateToken([UserType.MANAGER], ["GET"]));
 app.use("/upload", authenticateToken([UserType.MANAGER]));
 app.use("/appointments", authenticateToken([UserType.CLIENT]));
