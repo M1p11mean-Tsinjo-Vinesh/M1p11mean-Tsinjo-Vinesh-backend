@@ -3,9 +3,10 @@ function forAppointmentReminder(appointment) {
   const formattedDate = new Date(appointment.appointmentDate).toLocaleString();
 
   // Format prices
-  const formattedElements = appointment.elements.map(element => {
-    const formattedPrice = element.service.price.toLocaleString() + " Ar";
-    return `
+  const formattedElements = appointment.elements
+    .map((element) => {
+      const formattedPrice = element.service.price.toLocaleString() + " Ar";
+      return `
             <tr>
                 <td>${element.service.name}</td>
                 <td>${element.employee.name}</td>
@@ -13,7 +14,8 @@ function forAppointmentReminder(appointment) {
                 <td>${formattedPrice}</td>
             </tr>
         `;
-  }).join('');
+    })
+    .join("");
 
   // Salutations et formules courtoises
   const greetings = `
@@ -52,5 +54,5 @@ function forAppointmentReminder(appointment) {
 }
 
 export const mailContentBuilder = {
-  forAppointmentReminder
-}
+  forAppointmentReminder,
+};

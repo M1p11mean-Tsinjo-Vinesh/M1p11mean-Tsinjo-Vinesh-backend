@@ -1,35 +1,34 @@
-import {CrudService} from "#core/services/crud-service.js";
-import {AppointmentModel} from "#models/appointment.model.js";
-import {mailContentBuilder} from "#services/mail-content-builder.js";
-import {mailer} from "#core/services/mailer.js";
-import {BadRequest} from "#core/util.js";
-import {notificationSender} from "#services/notification/notification-final.sender.js";
+import { CrudService } from "#core/services/crud-service.js";
+import { AppointmentModel } from "#models/appointment.model.js";
+import { mailContentBuilder } from "#services/mail-content-builder.js";
+import { mailer } from "#core/services/mailer.js";
+import { BadRequest } from "#core/util.js";
+import { notificationSender } from "#services/notification/notification-final.sender.js";
 import {
   CANCEL_ICON,
   getAdminAppointmentUrl,
   getClientAppointmentUrl,
   PAID_ICON,
-  VALIDATION_ICON
+  VALIDATION_ICON,
 } from "../static.vars.js";
-import {employeeService} from "#routes/employee.route.js";
+import { employeeService } from "#routes/employee.route.js";
 
 const statusInfos = {
   [-10]: {
     text: "Annulé",
-    icon: CANCEL_ICON
+    icon: CANCEL_ICON,
   },
   [10]: {
     text: "Validé",
-    icon: VALIDATION_ICON
+    icon: VALIDATION_ICON,
   },
   [20]: {
     text: "Payé",
-    icon: PAID_ICON
+    icon: PAID_ICON,
   },
-}
+};
 
 export class AppointmentService extends CrudService {
-
   elementService;
 
   constructor(appointmentService) {
@@ -47,12 +46,13 @@ export class AppointmentService extends CrudService {
    */
   async updateStatus(appointmentId, status) {
     const appointment = await this.findById(appointmentId);
-    if (appointment.status < 0) throw BadRequest("Vous ne pouvez plus changer l'état de ce rendez-vous");
-    if (appointment.status >= 10 && (status - appointment.status) <= 0) {
+    if (appointment.status < 0)
+      throw BadRequest("Vous ne pouvez plus changer l'état de ce rendez-vous");
+    if (appointment.status >= 10 && status - appointment.status <= 0) {
       throw BadRequest("Changement d'etat invalide");
     }
-    await this.update(appointmentId, {status});
-    await this.elementService.Model.updateMany({appointmentId}, {status});
+    await this.update(appointmentId, { status });
+    await this.elementService.Model.updateMany({ appointmentId }, { status });
     appointment.status = status;
     this.sendNotificationOnStateChange(appointment);
   }
@@ -62,16 +62,19 @@ export class AppointmentService extends CrudService {
    * @param appointment
    * @returns {Promise<void>}
    */
-  async sendNotificationOnStateChange(appointment){
+  async sendNotificationOnStateChange(appointment) {
     await Promise.all([
       this.notifyManagerOnStateChange(appointment),
-      this.notifyClientOnStateChange(appointment)
-    ])
+      this.notifyClientOnStateChange(appointment),
+    ]);
   }
 
-  async notifyManagerOnStateChange (appointment, statusInfo = statusInfos[appointment.status]) {
+  async notifyManagerOnStateChange(
+    appointment,
+    statusInfo = statusInfos[appointment.status],
+  ) {
     const managers = await employeeService.findManagers();
-    managers.forEach(manager => {
+    managers.forEach((manager) => {
       notificationSender.send({
         user: manager,
         title: `Rendez-vous ${statusInfo.text}`,
@@ -79,12 +82,15 @@ export class AppointmentService extends CrudService {
           Le rendez vous de ${appointment.client.name} [${appointment._id}] à été ${statusInfo.text}
         `,
         redirectUrl: getClientAppointmentUrl(appointment),
-        pictureUrl: statusInfo.icon
-      })
-    })
+        pictureUrl: statusInfo.icon,
+      });
+    });
   }
 
-  async notifyClientOnStateChange(appointment, statusInfo = statusInfos[appointment.status]) {
+  async notifyClientOnStateChange(
+    appointment,
+    statusInfo = statusInfos[appointment.status],
+  ) {
     notificationSender.send({
       user: appointment.client,
       title: `Rendez-vous ${statusInfo.text}`,
@@ -92,8 +98,8 @@ export class AppointmentService extends CrudService {
         Votre rendez-vous [${appointment._id}] à été ${statusInfo.text}
       `,
       redirectUrl: getAdminAppointmentUrl(appointment),
-      pictureUrl: statusInfo.icon
-    })
+      pictureUrl: statusInfo.icon,
+    });
   }
 
   /**
@@ -103,7 +109,7 @@ export class AppointmentService extends CrudService {
    * @returns {Promise<*>}
    */
   async addComment(appointmentId, comment) {
-    return await this.update(appointmentId, {$push: {comments: comment}});
+    return await this.update(appointmentId, { $push: { comments: comment } });
   }
 
   /**
@@ -112,7 +118,7 @@ export class AppointmentService extends CrudService {
    * @returns {Promise<Awaited<*>[]>}
    */
   async sendAlertsForAppointmentId(appointmentId) {
-    const appointment = await this.findOne({_id: appointmentId});
+    const appointment = await this.findOne({ _id: appointmentId });
     return await this.sendAlertsForAppointment(appointment);
   }
 
@@ -123,14 +129,13 @@ export class AppointmentService extends CrudService {
    * @returns {Promise<Awaited<unknown>[]>}
    */
   async sendAlertsForAppointment(appointment) {
-    const {appointmentDate} = appointment;
+    const { appointmentDate } = appointment;
     const content = mailContentBuilder.forAppointmentReminder(appointment);
     const dates = this.calculateDatesForReminder(appointmentDate);
-    const recipients = [appointment.client.email]
+    const recipients = [appointment.client.email];
     const subject = `[m1pp11mean-Tsinjo-Vinesh] Rappel de votre rendez vous  le ${new Date(appointmentDate).toLocaleString()}-> ${appointment._id}`;
-    return await mailer.send({dates, recipients, subject, content});
+    return await mailer.send({ dates, recipients, subject, content });
   }
-
 
   /**
    * Creates an array of date to remind the client.
@@ -147,9 +152,8 @@ export class AppointmentService extends CrudService {
       throw BadRequest("Date de rendez-vous invalide");
     }
     const diff = date - now;
-    return [now, now + diff/2, date - (60000 * 10), date]
+    return [now, now + diff / 2, date - 60000 * 10, date];
   }
-
 
   /**
    * Finds one appointment based on filter.
@@ -160,15 +164,17 @@ export class AppointmentService extends CrudService {
   async findOne(search) {
     const found = (await super.findOne(search))?._doc;
     if (found) {
-      found.elements = (await this.elementService.findAll({
-        sort: {
-          column: "startDate",
-          method: 1
-        },
-        search: {
-          appointmentId: found._id
-        }
-      })).map(elt => elt._doc);
+      found.elements = (
+        await this.elementService.findAll({
+          sort: {
+            column: "startDate",
+            method: 1,
+          },
+          search: {
+            appointmentId: found._id,
+          },
+        })
+      ).map((elt) => elt._doc);
     }
     return found;
   }
@@ -181,7 +187,7 @@ export class AppointmentService extends CrudService {
   async create(data) {
     let appointment;
     try {
-      const {date, elements, ...rest} = data;
+      const { date, elements, ...rest } = data;
       if (!this.isAppointmentDateValid(rest.appointmentDate)) {
         throw BadRequest("Date de rendez-vous invalide");
       }
@@ -191,8 +197,14 @@ export class AppointmentService extends CrudService {
       // set calculated fiels,
       // price = sum of service prices
       // duration = sum of service durations
-      rest.estimatedPrice = details.reduce((prev, curr) => prev + curr.service.price, 0);
-      rest.estimatedDuration = details.reduce((prev, curr) => prev + curr.service.duration, 0);
+      rest.estimatedPrice = details.reduce(
+        (prev, curr) => prev + curr.service.price,
+        0,
+      );
+      rest.estimatedDuration = details.reduce(
+        (prev, curr) => prev + curr.service.duration,
+        0,
+      );
 
       // persist data
       appointment = await super.create(rest);
@@ -200,8 +212,7 @@ export class AppointmentService extends CrudService {
       await this.elementService.createElements(appointment);
       this.sendNotificationToManagerOnCreation(appointment);
       return appointment;
-    }
-    catch (e) {
+    } catch (e) {
       if (appointment) {
         this.remove(appointment._id);
       }
@@ -216,8 +227,8 @@ export class AppointmentService extends CrudService {
    */
   async sendNotificationToManagerOnCreation(appointment) {
     let managers = await employeeService.findManagers();
-    managers = managers.map(manager => manager._doc);
-    managers.forEach(manager => {
+    managers = managers.map((manager) => manager._doc);
+    managers.forEach((manager) => {
       notificationSender.send({
         user: manager,
         title: "Demande de validation RDV",
@@ -225,9 +236,9 @@ export class AppointmentService extends CrudService {
           L'utilisateur ${appointment.client.name} a demandé un rendez vous qui nécessite votre validation
         `,
         redirectUrl: getAdminAppointmentUrl(appointment),
-        pictureUrl: VALIDATION_ICON
+        pictureUrl: VALIDATION_ICON,
       });
-    })
+    });
   }
 
   /**
@@ -238,5 +249,4 @@ export class AppointmentService extends CrudService {
   isAppointmentDateValid(appointmentDate) {
     return new Date().getTime() < new Date(appointmentDate).getTime();
   }
-
 }
