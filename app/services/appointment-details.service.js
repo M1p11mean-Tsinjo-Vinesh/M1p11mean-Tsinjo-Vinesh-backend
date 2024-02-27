@@ -2,6 +2,7 @@ import { CrudService } from "#core/services/crud-service.js";
 import { AppointmentDetailsModel } from "#models/appointment.model.js";
 import { BadRequest } from "#core/util.js";
 import { PipelineBuilder } from "#core/pipeline.builder.js";
+import mongoose from "mongoose";
 
 export class AppointmentDetailsService extends CrudService {
   employeeService;
