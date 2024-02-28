@@ -50,7 +50,7 @@ export class AuthService {
         },
         process.env.TOKEN_SECRET,
         {
-          expiresIn: "1h",
+          expiresIn: process.env.TOKEN_EXPIRATION,
         },
       ),
     };
@@ -82,7 +82,7 @@ export class AuthService {
         },
         process.env.TOKEN_SECRET,
         {
-          expiresIn: "1h",
+          expiresIn: process.env.TOKEN_EXPIRATION,
         },
       ),
     };
