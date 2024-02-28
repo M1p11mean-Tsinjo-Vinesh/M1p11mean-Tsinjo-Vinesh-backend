@@ -31,6 +31,7 @@ import {notificationRoute} from "#routes/notification.route.js";
 
 // dot env support
 dotenv.config();
+process.env.TZ='Etc/GMT+3';
 
 // server initialization
 const app = express();
