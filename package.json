@@ -4,9 +4,9 @@
   "description": "Rest API backend for M1 p11 Mean",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "debug": "nodemon --inspect-brk index.js",
-    "start": "node index.js"
+    "dev": "env TZ='Etc/GMT+3' nodemon index.js",
+    "debug": "env TZ='Etc/GMT+3' nodemon --inspect-brk index.js",
+    "start": "env TZ='Etc/GMT+3' node index.js"
   },
   "type": "module",
   "author": "TsinjoAndrianarivony & SinelVinesh",
