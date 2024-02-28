@@ -49,7 +49,8 @@ app.use(
     origin: [
       "http://localhost:4200",
       "http://192.168.88.2:4200",
-      "https://m1p11mean-tsinjo-vinesh-front.vercel.app",
+      "https://m1p11mean-tsinjo-vinesh-back-office.vercel.app",
+      "https://m1p11mean-tsinjo-vinesh-front-office.vercel.app",
     ],
   }),
 );
