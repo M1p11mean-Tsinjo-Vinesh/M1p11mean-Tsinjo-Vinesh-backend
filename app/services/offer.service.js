@@ -19,7 +19,9 @@ export class OfferService extends CrudService {
   }
 
   async remove(id) {
+    const offer = await this.findById(id);
     await super.remove(id);
+    this.serviceServices.remove(offer.serviceId);
   }
 
 }
