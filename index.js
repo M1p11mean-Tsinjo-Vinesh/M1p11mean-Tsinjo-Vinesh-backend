@@ -34,7 +34,7 @@ dotenv.config();
 
 // server initialization
 const app = express();
-const wsServer = new ws.WebSocketServer({noServer: true});
+const wsServer = new ws.WebSocketServer({ noServer: true });
 
 const PORT = process.env.PORT || 3000;
 
@@ -46,13 +46,17 @@ storage.setup();
 
 app.use(
   cors({
-    origin: ["http://localhost:4200", "http://192.168.88.2:4200", "https://m1p11mean-tsinjo-vinesh-front.vercel.app/"],
+    origin: [
+      "http://localhost:4200",
+      "http://192.168.88.2:4200",
+      "https://m1p11mean-tsinjo-vinesh-front.vercel.app",
+    ],
   }),
 );
 
 // middlewares
 // register middleware body Parser
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Use of the authentication middleware
@@ -68,7 +72,10 @@ app.use("/upload", authenticateToken([UserType.MANAGER]));
 app.use("/appointments", authenticateToken([UserType.CLIENT]));
 app.use("/offers", authenticateToken([UserType.MANAGER]));
 app.use("/manager/appointments", authenticateToken([UserType.MANAGER]));
-app.use("/employee/appointments", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
+app.use(
+  "/employee/appointments",
+  authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]),
+);
 app.use(
   "/appointment-common",
   authenticateToken([UserType.CLIENT, UserType.MANAGER]),
@@ -76,7 +83,10 @@ app.use(
 app.use("/payment", authenticateToken([UserType.CLIENT, UserType.MANAGER]));
 app.use("/recap", authenticateToken([UserType.EMPLOYEE, UserType.MANAGER]));
 app.use("/expenses", authenticateToken([UserType.MANAGER]));
-app.use("/notifications", authenticateToken([UserType.MANAGER, UserType.EMPLOYEE, UserType.CLIENT]));
+app.use(
+  "/notifications",
+  authenticateToken([UserType.MANAGER, UserType.EMPLOYEE, UserType.CLIENT]),
+);
 
 // register routes
 app.use("/users", userRoute);
@@ -105,10 +115,10 @@ const httpServer = app.listen(PORT, (error) => {
   console.log(!error ? `Server is listening on port ${PORT}` : error);
 });
 
-wsServer.on('connection', handleWsConnection);
+wsServer.on("connection", handleWsConnection);
 
-httpServer.on('upgrade', (request, socket, head) => {
-  wsServer.handleUpgrade(request, socket, head, socket => {
-    wsServer.emit('connection', socket, request);
+httpServer.on("upgrade", (request, socket, head) => {
+  wsServer.handleUpgrade(request, socket, head, (socket) => {
+    wsServer.emit("connection", socket, request);
   });
-})
+});
