@@ -47,6 +47,12 @@ export const serviceSchema = new mongoose.Schema({
     required: true,
     min: 0,
     max: 1 // Commission must be between 0 and 1
+  },
+  startDate: Date,
+  endDate: Date,
+  discountInformation: {
+    value: Number,
+    discountValue: Number
   }
 });
 
