@@ -108,6 +108,13 @@ app.use("/preferences", preferencesRoute);
 app.use("/stats", statRoute);
 app.use("/notifications", notificationRoute);
 
+app.get("/", (req, res, next) => {
+  res.json({
+    tz: Intl.DateTimeFormat().resolvedOptions().timeZone
+  });
+  next();
+})
+
 // handle throws or next(err) by async calls
 app.use(errorHandler);
 
