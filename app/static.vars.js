@@ -7,9 +7,9 @@ export const BO_URL = process.env.BO_URL;
 export const FO_URL = process.env.FO_URL;
 
 export const getAdminAppointmentUrl = (appointment) =>
-  "/management/rendez-vous/details/" + appointment._id;
+  BO_URL + "/management/rendez-vous/details/" + appointment._id;
 export const getClientAppointmentUrl = (appointment) =>
-  FO_URL + "appointment/" + appointment._id;
+  FO_URL + "rendez-vous/details/" + appointment._id;
 export const VALIDATION_ICON =
   "https://res.cloudinary.com/dje2mveih/image/upload/v1708613830/m1p11mean-Tsinjo-Vinesh/wa4n1j6c11knectwzlaw.png";
 export const CANCEL_ICON =
