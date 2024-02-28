@@ -31,7 +31,6 @@ import {notificationRoute} from "#routes/notification.route.js";
 
 // dot env support
 dotenv.config();
-process.env.TZ='Etc/GMT+3';
 
 // server initialization
 const app = express();
@@ -108,13 +107,6 @@ app.use("/expenses", expenseRoute);
 app.use("/preferences", preferencesRoute);
 app.use("/stats", statRoute);
 app.use("/notifications", notificationRoute);
-
-app.get("/", (req, res, next) => {
-  res.json({
-    tz: Intl.DateTimeFormat().resolvedOptions().timeZone
-  });
-  next();
-})
 
 // handle throws or next(err) by async calls
 app.use(errorHandler);
