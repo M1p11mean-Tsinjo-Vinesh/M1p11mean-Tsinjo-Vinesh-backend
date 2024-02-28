@@ -46,13 +46,13 @@ storage.setup();
 
 app.use(
   cors({
-    origin: ["http://localhost:4200", "http://192.168.88.2:4200"],
+    origin: ["http://localhost:4200", "http://192.168.88.2:4200", "https://m1p11mean-tsinjo-vinesh-front.vercel.app/"],
   }),
 );
 
 // middlewares
 // register middleware body Parser
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // Use of the authentication middleware
