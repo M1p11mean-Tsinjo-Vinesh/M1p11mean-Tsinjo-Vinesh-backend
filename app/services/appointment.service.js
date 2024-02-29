@@ -81,7 +81,7 @@ export class AppointmentService extends CrudService {
         description: `
           Le rendez vous de ${appointment.client.name} [${appointment._id}] à été ${statusInfo.text}
         `,
-        redirectUrl: getClientAppointmentUrl(appointment),
+        redirectUrl: getAdminAppointmentUrl(appointment),
         pictureUrl: statusInfo.icon,
       });
     });
@@ -97,7 +97,7 @@ export class AppointmentService extends CrudService {
       description: `
         Votre rendez-vous [${appointment._id}] à été ${statusInfo.text}
       `,
-      redirectUrl: getAdminAppointmentUrl(appointment),
+      redirectUrl: getClientAppointmentUrl(appointment),
       pictureUrl: statusInfo.icon,
     });
   }
