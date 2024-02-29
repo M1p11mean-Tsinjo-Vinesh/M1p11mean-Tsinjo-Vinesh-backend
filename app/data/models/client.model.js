@@ -23,9 +23,11 @@ const schema = new mongoose.Schema({
   },
   favoriteEmployees: {
     type: [mongoose.Schema.Types.ObjectId],
+    default: []
   },
   favoriteServices: {
     type: [mongoose.Schema.Types.ObjectId],
+    default: []
   },
 });
 

@@ -103,15 +103,15 @@ export class AppointmentDetailsService extends CrudService {
       if(shift.daysOfWeek.indexOf(startDate.getDay()) >= 0) {
 
         // verifies if the startDate and endDate fall into the timeframe of the employee
-        const [hourMin, minuteMin] = this.timeStringToArray(shift.startTime);
-        const [hourMax, minuteMax] = this.timeStringToArray(shift.endTime);
+        const minTime = this.timeStringToArray(shift.startTime);
+        const maxTime = this.timeStringToArray(shift.endTime);
         const milliseconds = startDate.getTime();
 
         // start of the employee's shift
-        const min = new Date(milliseconds).setHours(hourMin, minuteMin, 0, 0);
+        const min = this.toDate(startDate, minTime);
 
         // end of the employee's shift
-        const max = new Date(milliseconds).setHours(hourMax, minuteMax, 0, 0);
+        const max = this.toDate(startDate, maxTime);
 
         // verifies if the startDate and endDate fall into the timeframe of the employee
         if (min <= startDate && (milliseconds + duration * 60000) <= max) {
@@ -124,6 +124,22 @@ export class AppointmentDetailsService extends CrudService {
       throw BadRequest("Un élément de votre rendez-vous est hors du shift de l'employée car " + this.shiftToSentenceForError(employee.shifts, employee.name));
     }
     await this.checkIfEmployeeBooked(appointmentElement);
+  }
+
+  /**
+   * date into +03:00 date
+   * @param baseDate
+   * @param hours
+   * @param minutes
+   * @returns {Date}
+   */
+  toDate(baseDate = new Date(), [hours, minutes]) {
+    const year = baseDate.getFullYear();
+    const month = String(baseDate.getMonth() + 1).padStart(2, '0');
+    const day = String(baseDate.getDate()).padStart(2, '0');
+    const h = String(hours).padStart(2, '0');
+    const m = String(minutes).padStart(2, '0');
+    return new Date(`${year}-${month}-${day}T${h}:${m}:00+03:00`);
   }
 
   /**
