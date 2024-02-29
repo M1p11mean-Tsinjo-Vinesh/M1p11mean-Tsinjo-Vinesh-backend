@@ -31,7 +31,7 @@ import {notificationRoute} from "#routes/notification.route.js";
 
 // dot env support
 dotenv.config();
-
+process.env.TZ = "Africa/Nairobi";
 // server initialization
 const app = express();
 const wsServer = new ws.WebSocketServer({ noServer: true });
