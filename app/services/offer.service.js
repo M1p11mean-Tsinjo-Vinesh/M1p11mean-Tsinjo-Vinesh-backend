@@ -1,5 +1,8 @@
-import { CrudService } from "#core/services/crud-service.js";
-import { OfferModel } from "#models/offer.model.js";
+import {CrudService} from "#core/services/crud-service.js";
+import {OfferModel} from "#models/offer.model.js";
+import {ClientModel} from "#models/client.model.js";
+import {notificationSender} from "#services/notification/notification-final.sender.js";
+import {FO_URL, SPECIAL_OFFER_ICON} from "../static.vars.js";
 
 export class OfferService extends CrudService {
 
@@ -11,9 +14,41 @@ export class OfferService extends CrudService {
   }
 
   async create(data) {
-    const result = await super.create(data);
-    this.createServiceFrom(result).catch(console.log);
-    return result;
+    const offer = await super.create(data);
+    this.createServiceFrom(offer).catch(console.log);
+    this.sendNotificationToClients(offer).catch(console.log);
+    return offer;
+  }
+
+  async sendNotificationToClients({
+    name,
+    startDate,
+    endDate,
+    services
+  }) {
+    const clients = await ClientModel.find({}, 'email');
+    for(let client of clients){
+      notificationSender.send({
+        user: client,
+        title: `Offre spéciale disponible - ${name}`,
+        description: `
+          Offre special disponible de ${this.formatDate(startDate)} à ${this.formatDate(endDate)},
+          ${this.servicesIntoString(services)} avec une très belle réduction.
+        `,
+        redirectUrl: FO_URL,
+        pictureUrl: SPECIAL_OFFER_ICON
+      })
+    }
+  }
+
+  servicesIntoString(services) {
+    return services.map(service => service.name).join(' + ')
+  }
+
+  formatDate(date) {
+    return new Date(date).toLocaleString('fr-FR', {
+      timeZone: "Etc/GMT-3"
+    });
   }
 
   async createServiceFrom(offer) {
