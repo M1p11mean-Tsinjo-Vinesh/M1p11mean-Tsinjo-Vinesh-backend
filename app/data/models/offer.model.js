@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ServiceModel } from "#models/service.model.js";
+import {ServiceModel} from "#models/service.model.js";
 
 const keys = [process.env.CLOUD_NAME, process.env.FILE_FOLDER];
 
@@ -67,6 +67,7 @@ const schema = new mongoose.Schema({
       message: "Vous devez ajouter au moins un service.",
     },
   },
+  serviceId: mongoose.Types.ObjectId
 });
 
 export const OfferModel = mongoose.model("Offer", schema);
